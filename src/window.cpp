@@ -1,29 +1,13 @@
 #include "window.h"
 
+#include "kiwi_exception.h"
+
 namespace kiwi {
 
-	static 
-	LRESULT WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-	{
-		auto myWnd = (Window*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
-
-		switch (message)
-		{
-		case WM_DESTROY:
-			PostQuitMessage(0);
-			return 0;
-		case WM_CLOSE:
-			DestroyWindow(hWnd);
-			return 0;
-		default:
-			return DefWindowProc(hWnd, message, wParam, lParam);
-			break;
-		}
-
-		return 0;
-	}
-
-	Window::Window(int width, int height)
+	Window::Window(int32_t width, int32_t height)
+		:
+		width_(width),
+		height_(height)
 	{
 		hinstance_ = GetModuleHandle(NULL);
 
@@ -42,16 +26,14 @@ namespace kiwi {
 
 		if (!RegisterClassEx(&wcex_))
 		{
-			MessageBox(NULL, L"Call to RegisterClassEx failed!", L"Kiwi", NULL);
-			return;
+			throw KiwiException("Call to RegisterClassEx failed");
 		}
 
 		DWORD window_style = WS_OVERLAPPEDWINDOW;
 		RECT client_rect = { 0, 0, width, height };
 		if (!AdjustWindowRectEx(&client_rect, window_style, false, NULL))
 		{
-			MessageBox(NULL, L"Call to AdjustWindowRectEx failed!", L"Kiwi", NULL);
-			return;
+			throw KiwiException("Call to AdjustWindowRectEx failed");
 		}
 
 		hwnd_ = CreateWindow(
@@ -70,12 +52,32 @@ namespace kiwi {
 			NULL
 		);
 
+		if (!hwnd_)
+		{
+			throw KiwiException("Could not create window, call to CreateWindow ");
+		}
+
+		// Set "this" as user data so we can grab it in WindowProc
 		SetWindowLongPtr(hwnd_, GWLP_USERDATA, (LONG_PTR)this);
+
+		// Setup back buffer and the BITMAPINFOHEADER
+		back_buffer_size_ = width * height * 3;
+		back_buffer_ = (uint8_t*)calloc(back_buffer_size_, 1);
+
+		bitmap_info_.biSize = sizeof(bitmap_info_);
+		bitmap_info_.biWidth = width;
+
+		// negative sign == render top-down
+		bitmap_info_.biHeight = -height; 
+		bitmap_info_.biPlanes = 1;
+
+		// Each 3-byte triplet in the bitmap array represents the relative intensities of blue, green, and red, respectively, for a pixel
+		bitmap_info_.biBitCount = 8 * 3;
+		bitmap_info_.biCompression = BI_RGB;
 	}
 
 	Window::~Window()
 	{
-
 	}
 
 	void Window::open()
@@ -94,6 +96,38 @@ namespace kiwi {
 		}
 
 		return false;
+	}
+
+	LRESULT  Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+	{
+		auto window = (Window*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+
+		switch (message)
+		{
+		case WM_PAINT: {
+			HDC dc = GetDC(hWnd);
+			
+			StretchDIBits(dc,
+				0, 0, window->width_, window->height_,
+				0, 0, window->width_, window->height_,
+				window->back_buffer_, (BITMAPINFO*)&window->bitmap_info_,
+				DIB_RGB_COLORS, SRCCOPY);
+			
+			ReleaseDC(hWnd, dc);
+			break;
+		}
+		case WM_DESTROY:
+			PostQuitMessage(0);
+			break;
+		case WM_CLOSE:
+			DestroyWindow(hWnd);
+			break;
+		default:
+			return DefWindowProc(hWnd, message, wParam, lParam);
+			break;
+		}
+
+		return 0;
 	}
 
 }

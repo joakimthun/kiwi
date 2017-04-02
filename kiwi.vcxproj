@@ -139,10 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\kiwi_exception.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\kiwi_exception.h" />
+    <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\window.h" />
   </ItemGroup>
   <ItemGroup>
