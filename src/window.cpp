@@ -78,6 +78,11 @@ namespace kiwi {
 
 	Window::~Window()
 	{
+		if (back_buffer_)
+		{
+			free(back_buffer_);
+			back_buffer_ = nullptr;
+		}
 	}
 
 	void Window::open()
