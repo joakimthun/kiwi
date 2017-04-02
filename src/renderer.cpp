@@ -14,6 +14,16 @@ namespace kiwi {
 	{
 	}
 
+	int32_t Renderer::width()
+	{
+		return width_;
+	}
+
+	int32_t Renderer::height()
+	{
+		return height_;
+	}
+
 	void Renderer::clear(uint8_t r, uint8_t g, uint8_t b)
 	{
 		for (auto i = 0; i < back_buffer_size_; i += 3)
@@ -24,7 +34,7 @@ namespace kiwi {
 		}
 	}
 
-	void Renderer::set_pixel(uint32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b)
+	void Renderer::put_pixel(uint32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b)
 	{
 		int index = (x + y * width_) * 3;
 		back_buffer_[index] = b;

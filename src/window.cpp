@@ -91,16 +91,9 @@ namespace kiwi {
 		UpdateWindow(hwnd_);
 	}
 
-	bool Window::peek_message(MSG *msg)
+	void Window::update()
 	{
-		if (PeekMessage(msg, NULL, NULL, NULL, PM_REMOVE))
-		{
-			TranslateMessage(msg);
-			DispatchMessage(msg);
-			return true;
-		}
-
-		return false;
+		RedrawWindow(hwnd_, NULL, NULL, RDW_INVALIDATE);
 	}
 
 	LRESULT  Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -127,12 +120,9 @@ namespace kiwi {
 		case WM_CLOSE:
 			DestroyWindow(hWnd);
 			break;
-		default:
-			return DefWindowProc(hWnd, message, wParam, lParam);
-			break;
 		}
 
-		return 0;
+		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 
 }

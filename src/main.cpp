@@ -2,8 +2,12 @@
 
 #include "window.h"
 #include "renderer.h"
+#include "stars.h"
 
 using namespace kiwi;
+
+// TODO: Use a real timer...
+const float dt = 0.0016;
 
 int main(int argc, char* argv[])
 {
@@ -11,33 +15,24 @@ int main(int argc, char* argv[])
 	window.open();
 
 	Renderer renderer(&window);
-	renderer.clear(0, 0, 255);
+	renderer.clear(0, 0, 0);
 
-	renderer.set_pixel(10, 10, 255, 0, 0);
-	renderer.set_pixel(10, 11, 255, 0, 0);
-	renderer.set_pixel(10, 11, 255, 0, 0);
-	renderer.set_pixel(10, 12, 255, 0, 0);
-	renderer.set_pixel(10, 13, 255, 0, 0);
-	renderer.set_pixel(10, 14, 255, 0, 0);
+	Stars stars(8000, 64.0f, 30.0f);
 
-	renderer.set_pixel(11, 10, 255, 0, 0);
-	renderer.set_pixel(11, 11, 255, 0, 0);
-	renderer.set_pixel(11, 11, 255, 0, 0);
-	renderer.set_pixel(11, 12, 255, 0, 0);
-	renderer.set_pixel(11, 13, 255, 0, 0);
-	renderer.set_pixel(11, 14, 255, 0, 0);
-
-	renderer.set_pixel(10, 10, 255, 0, 0);
-	renderer.set_pixel(10, 11, 255, 0, 0);
-	renderer.set_pixel(10, 11, 255, 0, 0);
-	renderer.set_pixel(10, 12, 255, 0, 0);
-	renderer.set_pixel(10, 13, 255, 0, 0);
-	renderer.set_pixel(10, 14, 255, 0, 0);
-
-	MSG msg;
-	while (true)
+	MSG msg = { 0 };
+	while (1)
 	{
-		while(window.peek_message(&msg)) {}
+		while(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+
+		if (msg.message == WM_QUIT)
+			break;
+
+		stars.frame(&renderer, dt);
+		window.update();
 	}
 
 	return 0;

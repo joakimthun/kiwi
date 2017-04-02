@@ -15,7 +15,7 @@ namespace kiwi {
 		~Window();
 
 		void open();
-		bool peek_message(MSG *msg);
+		void update();
 	private:
 		static LRESULT WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
