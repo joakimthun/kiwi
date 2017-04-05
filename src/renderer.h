@@ -21,6 +21,7 @@ namespace kiwi {
 		void put_pixel(int32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b);
 		void set_scan_buffer(int32_t y, int32_t x_min, int32_t x_max);
 		void fill_shape(int32_t y_min, int32_t y_max);
+		void fill_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3);
 		void scan_convert_triangle(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, int8_t handedness);
 	private:
 		void scan_convert_line(const Vertex &min_y, const Vertex &max_y, int8_t side);

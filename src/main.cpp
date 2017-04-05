@@ -38,8 +38,10 @@ int main(int argc, char* argv[])
 
 		renderer.clear(0x00, 0x00, 0x00);
 
-		renderer.scan_convert_triangle(min_y, mid_y, max_y, 0);
-		renderer.fill_shape(100, 300);
+		//renderer.scan_convert_triangle(min_y, mid_y, max_y, 0);
+		//renderer.fill_shape(100, 300);
+
+		renderer.fill_triangle(mid_y, max_y, min_y);
 
 		/*for (auto i = 100; i < 200; i++)
 		{
