@@ -151,6 +151,7 @@
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\stars.h" />
     <ClInclude Include="src\util.h" />
+    <ClInclude Include="src\vertex.h" />
     <ClInclude Include="src\window.h" />
   </ItemGroup>
   <ItemGroup>
