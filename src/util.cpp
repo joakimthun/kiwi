@@ -19,7 +19,7 @@ namespace kiwi {
 		float x2 = mid_y.x - min_y.x;
 		float y2 = mid_y.y - min_y.y;
 
-		// Positive cross product, right otherwise left
+		// Positive cross product?, right otherwise left
 		return (x1 * y2 - x2 * y1) >= 0 ? TriangleAreaSign::Positive : TriangleAreaSign::Negative;
 	}
 

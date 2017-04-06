@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include "glm\vec4.hpp"
+
 #include "window.h"
 #include "renderer.h"
 #include "stars.h"
@@ -8,10 +10,12 @@
 using namespace kiwi;
 
 // TODO: Use a real timer...
-const float dt = 0.0016;
+const float dt = 0.0016f;
 
 int main(int argc, char* argv[])
 {
+	glm::vec4 v4(0, 0, 0, 0);
+
 	Window window(800, 600);
 	window.open();
 
