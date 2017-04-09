@@ -2,9 +2,21 @@
 
 namespace kiwi {
 
-	Vertex::Vertex(float x, float y)
+	Vertex::Vertex(float x, float y, float z)
 		:
-		position_(glm::vec4(x, y, 0, 1))
+		position_(glm::vec4(x, y, z, 1))
+	{
+	}
+
+	Vertex::Vertex(float x, float y, float z, float w)
+		:
+		position_(glm::vec4(x, y, z, w))
+	{
+	}
+
+	Vertex::Vertex(const glm::vec4& position)
+		:
+		position_(position)
 	{
 	}
 
@@ -18,10 +30,36 @@ namespace kiwi {
 		return position_.y;
 	}
 
-	Vertex& Vertex::transform(const glm::mat4 &tranform)
+	float Vertex::z() const
 	{
-		position_ = tranform * position_;
-		return *this;
+		return position_.z;
+	}
+
+	float Vertex::w() const
+	{
+		return position_.w;
+	}
+
+	Vertex Vertex::transform(const glm::mat4 &transform) const
+	{
+		return Vertex(transform * position_);
+	}
+
+	Vertex Vertex::perspective_divide() const
+	{
+		return Vertex(
+			position_.x / position_.w,
+			position_.y / position_.w,
+			position_.z / position_.w,
+			position_.w);
+	}
+
+	Vertex Vertex::screen_space_transform(float half_width, float half_height) const
+	{
+		return Vertex(
+			half_width * x() + 0 * y() + 0 * z() + half_width * w(),
+			0 * x() + -half_height * y() + 0 * z() + half_height * w(),
+			z(), w());
 	}
 
 }
