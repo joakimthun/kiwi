@@ -74,21 +74,21 @@ namespace kiwi {
 
 		// First, sort vertices by y-coord
 		// If max is less then mid, swap em
-		if (max_y.y < mid_y.y)
+		if (max_y.y() < mid_y.y())
 			std::swap(max_y, mid_y);
 
 		// If mid is less then min, swap em
-		if (mid_y.y < min_y.y)
+		if (mid_y.y() < min_y.y())
 			std::swap(mid_y, min_y);
 
 		// If max is less then mid, swap em again to handle v1 being max
-		if (max_y.y < mid_y.y)
+		if (max_y.y() < mid_y.y())
 			std::swap(max_y, mid_y);
 
 		const auto area_sign = triangle_area_sign(min_y, max_y, mid_y);
 
 		scan_convert_triangle(min_y, mid_y, max_y, static_cast<int8_t>(area_sign));
-		fill_shape(static_cast<int32_t>(min_y.y), static_cast<int32_t>(max_y.y));
+		fill_shape(static_cast<int32_t>(min_y.y()), static_cast<int32_t>(max_y.y()));
 	}
 
 	void Renderer::scan_convert_triangle(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, int8_t handedness)
@@ -100,10 +100,10 @@ namespace kiwi {
 
 	void Renderer::scan_convert_line(const Vertex &min_y, const Vertex &max_y, int8_t side)
 	{
-		const auto y_start = static_cast<int32_t>(min_y.y);
-		const auto y_end  = static_cast<int32_t>(max_y.y);
-		const auto x_start = static_cast<int32_t>(min_y.x);
-		const auto x_end = static_cast<int32_t>(max_y.x);
+		const auto y_start = static_cast<int32_t>(min_y.y());
+		const auto y_end  = static_cast<int32_t>(max_y.y());
+		const auto x_start = static_cast<int32_t>(min_y.x());
+		const auto x_end = static_cast<int32_t>(max_y.x());
 
 		const auto y_dist = y_end - y_start;
 		const auto x_dist = x_end - x_start;

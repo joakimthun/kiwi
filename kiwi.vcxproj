@@ -146,6 +146,7 @@
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\stars.cpp" />
     <ClCompile Include="src\util.cpp" />
+    <ClCompile Include="src\vertex.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>

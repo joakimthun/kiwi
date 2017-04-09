@@ -1,12 +1,21 @@
 #pragma once
 
+#include "glm/vec4.hpp"
+#include "glm/mat4x4.hpp"
+
 namespace kiwi {
 
-	struct Vertex
+	class Vertex
 	{
-		inline Vertex(float x, float y) : x(x), y(y) {}
-		float x;
-		float y;
+	public:
+		Vertex(float x, float y);
+
+		float x() const;
+		float y() const;
+		Vertex& transform(const glm::mat4 &tranform);
+
+	private:
+		glm::vec4 position_;
 	};
 
 }
