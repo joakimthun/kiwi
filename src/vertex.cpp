@@ -57,8 +57,8 @@ namespace kiwi {
 	Vertex Vertex::screen_space_transform(float half_width, float half_height) const
 	{
 		return Vertex(
-			half_width * x() + 0 * y() + 0 * z() + half_width * w(),
-			0 * x() + -half_height * y() + 0 * z() + half_height * w(),
+			half_width * x() + half_width * w(),
+			-half_height * y() + half_height * w(),
 			z(), w());
 	}
 
