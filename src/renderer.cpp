@@ -13,6 +13,8 @@ namespace kiwi {
 		window_(window),
 		width_(window->width_),
 		height_(window->height_),
+		half_width_(static_cast<float>(width_ / 2)),
+		half_height_(static_cast<float>(height_ / 2)),
 		back_buffer_(window->back_buffer_),
 		back_buffer_size_(window->back_buffer_size_)
 	{
@@ -69,12 +71,9 @@ namespace kiwi {
 
 	void Renderer::fill_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3)
 	{
-		const auto half_width = static_cast<float>(width_ / 2);
-		const auto half_height = static_cast<float>(height_ / 2);
-
-		auto min_y = v1.screen_space_transform(half_width, half_height).perspective_divide();
-		auto mid_y = v2.screen_space_transform(half_width, half_height).perspective_divide();
-		auto max_y = v3.screen_space_transform(half_width, half_height).perspective_divide();
+		auto min_y = v1.screen_space_transform(half_width_, half_height_).perspective_divide();
+		auto mid_y = v2.screen_space_transform(half_width_, half_height_).perspective_divide();
+		auto max_y = v3.screen_space_transform(half_width_, half_height_).perspective_divide();
 
 		// First, sort vertices by y-coord
 		// If max is less then mid, swap em

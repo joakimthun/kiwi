@@ -27,8 +27,10 @@ namespace kiwi {
 		void scan_convert_line(const Vertex &min_y, const Vertex &max_y, int8_t side);
 
 		Window *window_;
-		int32_t width_;
-		int32_t height_;
+		const int32_t width_;
+		const int32_t height_;
+		const float half_width_;
+		const float half_height_;
 		uint8_t *back_buffer_;
 		const uint64_t back_buffer_size_;
 		std::vector<uint32_t> scan_buffer_;
