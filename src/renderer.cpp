@@ -1,6 +1,7 @@
 #include "renderer.h"
 
 #include <utility>
+#include <math.h>
 #include "glm/mat4x4.hpp"
 
 #include "window.h"
@@ -91,7 +92,7 @@ namespace kiwi {
 		const auto area_sign = triangle_area_sign(min_y, max_y, mid_y);
 
 		scan_convert_triangle(min_y, mid_y, max_y, static_cast<int8_t>(area_sign));
-		fill_shape(static_cast<int32_t>(min_y.y()), static_cast<int32_t>(max_y.y()));
+		fill_shape(static_cast<int32_t>(ceil(min_y.y())), static_cast<int32_t>(ceil(max_y.y())));
 	}
 
 	void Renderer::scan_convert_triangle(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, int8_t handedness)
@@ -103,25 +104,26 @@ namespace kiwi {
 
 	void Renderer::scan_convert_line(const Vertex &min_y, const Vertex &max_y, int8_t side)
 	{
-		const auto y_start = static_cast<int32_t>(min_y.y());
-		const auto y_end  = static_cast<int32_t>(max_y.y());
-		const auto x_start = static_cast<int32_t>(min_y.x());
-		const auto x_end = static_cast<int32_t>(max_y.x());
+		const auto y_start = static_cast<int32_t>(ceil(min_y.y()));
+		const auto y_end  = static_cast<int32_t>(ceil(max_y.y()));
+		const auto x_start = static_cast<int32_t>(ceil(min_y.x()));
+		const auto x_end = static_cast<int32_t>(ceil(max_y.x()));
 
-		const auto y_dist = y_end - y_start;
-		const auto x_dist = x_end - x_start;
+		const auto y_dist = max_y.y() - min_y.y();
+		const auto x_dist = max_y.x() - min_y.x();
 
 		if (y_dist <= 0)
 			return;
 
 		// The "amount" we need to move on the x-axis for each y-coord
-		const float x_stride = static_cast<float>(x_dist) / static_cast<float>(y_dist);
-		float cur_x = static_cast<float>(x_start);
+		const float x_step = x_dist / y_dist;
+		const float y_prestep = y_start - min_y.y();
+		float cur_x = min_y.x() + y_prestep * x_step;
 
 		for (auto i = y_start; i < y_end; i++)
 		{
-			scan_buffer_[i * 2 + side] = static_cast<int32_t>(cur_x);
-			cur_x += x_stride;
+			scan_buffer_[i * 2 + side] = static_cast<int32_t>(ceil(cur_x));
+			cur_x += x_step;
 		}
 	}
 
