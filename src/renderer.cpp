@@ -19,7 +19,6 @@ namespace kiwi {
 		back_buffer_(window->back_buffer_),
 		back_buffer_size_(window->back_buffer_size_)
 	{
-		scan_buffer_.resize(height_ * 2);
 	}
 
 	int32_t Renderer::width()
@@ -50,26 +49,6 @@ namespace kiwi {
 		back_buffer_[index + 2] = r;
 	}
 
-	void Renderer::set_scan_buffer(int32_t y, int32_t x_min, int32_t x_max)
-	{
-		scan_buffer_[y * 2] = x_min;
-		scan_buffer_[y * 2 + 1] = x_max;
-	}
-
-	void Renderer::fill_shape(int32_t y_min, int32_t y_max)
-	{
-		for (auto i = y_min; i < y_max; i++)
-		{
-			const auto x_min = scan_buffer_[i * 2];
-			const auto x_max = scan_buffer_[i * 2 + 1];
-
-			for (auto j = x_min; j < x_max; j++)
-			{
-				put_pixel(j, i, 0xFF, 0xFF, 0xFF);
-			}
-		}
-	}
-
 	void Renderer::fill_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3)
 	{
 		auto min_y = v1.screen_space_transform(half_width_, half_height_).perspective_divide();
@@ -91,39 +70,48 @@ namespace kiwi {
 
 		const auto area_sign = triangle_area_sign(min_y, max_y, mid_y);
 
-		scan_convert_triangle(min_y, mid_y, max_y, static_cast<int8_t>(area_sign));
-		fill_shape(static_cast<int32_t>(ceil(min_y.y())), static_cast<int32_t>(ceil(max_y.y())));
+		scan_triangle(min_y, mid_y, max_y, area_sign == TriangleAreaSign::Positive);
 	}
 
-	void Renderer::scan_convert_triangle(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, int8_t handedness)
+	void Renderer::scan_triangle(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, bool handedness)
 	{
-		scan_convert_line(min_y, max_y, 0 + handedness);
-		scan_convert_line(min_y, mid_y, 1 - handedness);
-		scan_convert_line(mid_y, max_y, 1 - handedness);
+		auto top_to_bottom = Edge(min_y, max_y);
+		auto top_to_middle = Edge(min_y, mid_y);
+		auto middle_to_bottom = Edge(mid_y, max_y);
+
+		scan_edges(top_to_bottom, top_to_middle, handedness);
+		scan_edges(top_to_bottom, middle_to_bottom, handedness);
 	}
 
-	void Renderer::scan_convert_line(const Vertex &min_y, const Vertex &max_y, int8_t side)
+	void Renderer::scan_edges(Edge &a, Edge &b, bool handedness)
 	{
-		const auto y_start = static_cast<int32_t>(ceil(min_y.y()));
-		const auto y_end  = static_cast<int32_t>(ceil(max_y.y()));
-		const auto x_start = static_cast<int32_t>(ceil(min_y.x()));
-		const auto x_end = static_cast<int32_t>(ceil(max_y.x()));
+		auto *left = &a;
+		auto *right = &b;
 
-		const auto y_dist = max_y.y() - min_y.y();
-		const auto x_dist = max_y.x() - min_y.x();
+		if (handedness)
+		{
+			std::swap(left, right);
+		}
 
-		if (y_dist <= 0)
-			return;
-
-		// The "amount" we need to move on the x-axis for each y-coord
-		const float x_step = x_dist / y_dist;
-		const float y_prestep = y_start - min_y.y();
-		float cur_x = min_y.x() + y_prestep * x_step;
+		const auto y_start = b.y_start();
+		const auto y_end = b.y_end();
 
 		for (auto i = y_start; i < y_end; i++)
 		{
-			scan_buffer_[i * 2 + side] = static_cast<int32_t>(ceil(cur_x));
-			cur_x += x_step;
+			draw_scan_line(left->x(), right->x(), i);
+			left->step();
+			right->step();
+		}
+	}
+
+	void Renderer::draw_scan_line(float x_min, float x_max, int32_t i)
+	{
+		const auto min_x = static_cast<int32_t>(ceil(x_min));
+		const auto max_x = static_cast<int32_t>(ceil(x_max));
+
+		for (auto j = min_x; j < max_x; j++)
+		{
+			put_pixel(j, i, 0xFF, 0xFF, 0xFF);
 		}
 	}
 

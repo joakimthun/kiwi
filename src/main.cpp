@@ -22,11 +22,11 @@ int main(int argc, char* argv[])
 	renderer.clear(0x00, 0x00, 0x00);
 
 	Vertex min_y(-1, -1, 0);
-	Vertex mid_y(1, -1, 0);
-	Vertex max_y(0, 1, 0);
+	Vertex mid_y(0, 1, 0);
+	Vertex max_y(1, -1, 0);
 
 	glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.f / 600.f, -0.1f, 1000.0f);
-	glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1.5f));
+	glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.5f));
 	float rotation_v = 0.0f;
 
 	MSG msg = { 0 };
@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 		const auto rotation = glm::rotate(translation, rotation_v, glm::vec3(0.0f, 1.0f, 0.0f));
 		const auto transform = projection * translation * rotation;
 
-		renderer.fill_triangle(mid_y.transform(transform), max_y.transform(transform), min_y.transform(transform));
+		renderer.fill_triangle(min_y.transform(transform), mid_y.transform(transform), max_y.transform(transform));
 
 		window.update();
 	}
