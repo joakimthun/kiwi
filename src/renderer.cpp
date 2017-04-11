@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <math.h>
+#include "glm/vec4.hpp"
 #include "glm/mat4x4.hpp"
 
 #include "window.h"
@@ -75,15 +76,17 @@ namespace kiwi {
 
 	void Renderer::scan_triangle(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, bool handedness)
 	{
-		auto top_to_bottom = Edge(min_y, max_y);
-		auto top_to_middle = Edge(min_y, mid_y);
-		auto middle_to_bottom = Edge(mid_y, max_y);
+		const auto gradients = Gradients(min_y, mid_y, max_y);
 
-		scan_edges(top_to_bottom, top_to_middle, handedness);
-		scan_edges(top_to_bottom, middle_to_bottom, handedness);
+		auto top_to_bottom = Edge(gradients, min_y, max_y, 0);
+		auto top_to_middle = Edge(gradients, min_y, mid_y, 0);
+		auto middle_to_bottom = Edge(gradients, mid_y, max_y, 1);
+
+		scan_edges(gradients, top_to_bottom, top_to_middle, handedness);
+		scan_edges(gradients, top_to_bottom, middle_to_bottom, handedness);
 	}
 
-	void Renderer::scan_edges(Edge &a, Edge &b, bool handedness)
+	void Renderer::scan_edges(const Gradients &gradients, Edge &a, Edge &b, bool handedness)
 	{
 		auto *left = &a;
 		auto *right = &b;
@@ -98,20 +101,30 @@ namespace kiwi {
 
 		for (auto i = y_start; i < y_end; i++)
 		{
-			draw_scan_line(left->x(), right->x(), i);
+			draw_scan_line(gradients, *left, *right, i);
 			left->step();
 			right->step();
 		}
 	}
 
-	void Renderer::draw_scan_line(float x_min, float x_max, int32_t i)
+	void Renderer::draw_scan_line(const Gradients &gradients, const Edge &left, const Edge &right, int32_t i)
 	{
-		const auto min_x = static_cast<int32_t>(ceil(x_min));
-		const auto max_x = static_cast<int32_t>(ceil(x_max));
+		const auto min_x = static_cast<int32_t>(ceil(left.x()));
+		const auto max_x = static_cast<int32_t>(ceil(right.x()));
+
+		auto x_prestep = min_x - left.x();
+		const auto color_x_step = gradients.color_x_step();
+		auto color = left.color() + (color_x_step * x_prestep);
 
 		for (auto j = min_x; j < max_x; j++)
 		{
-			put_pixel(j, i, 0xFF, 0xFF, 0xFF);
+			// Colors are in the 0.0  1.0 range
+			const auto r = static_cast<uint8_t>(color.x * 255.0f + 0.5f);
+			const auto g = static_cast<uint8_t>(color.y * 255.0f + 0.5f);
+			const auto b = static_cast<uint8_t>(color.z * 255.0f + 0.5f);
+
+			put_pixel(j, i, r, g, b);
+			color = color + color_x_step;
 		}
 	}
 

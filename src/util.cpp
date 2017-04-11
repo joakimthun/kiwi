@@ -22,5 +22,4 @@ namespace kiwi {
 		// Positive cross product?
 		return (x1 * y2 - x2 * y1) >= 0 ? TriangleAreaSign::Positive : TriangleAreaSign::Negative;
 	}
-
 }

@@ -24,8 +24,8 @@ namespace kiwi {
 		
 	private:
 		void scan_triangle(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, bool handedness);
-		void scan_edges(Edge &a, Edge &b, bool handedness);
-		void draw_scan_line(float x_min, float x_max, int32_t i);
+		void scan_edges(const Gradients &gradients, Edge &a, Edge &b, bool handedness);
+		void draw_scan_line(const Gradients &gradients, const Edge &left, const Edge &right, int32_t i);
 
 		Window *window_;
 		const int32_t width_;

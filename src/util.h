@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <stdint.h>
 
+#include "glm/vec4.hpp"
+
 #include "vertex.h"
 
 namespace kiwi {

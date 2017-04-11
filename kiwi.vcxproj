@@ -142,6 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\edge.cpp" />
+    <ClCompile Include="src\gradients.cpp" />
     <ClCompile Include="src\kiwi_exception.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\renderer.cpp" />
@@ -152,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\edge.h" />
+    <ClInclude Include="src\gradients.h" />
     <ClInclude Include="src\kiwi_exception.h" />
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\stars.h" />
