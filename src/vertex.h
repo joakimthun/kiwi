@@ -8,20 +8,23 @@ namespace kiwi {
 	class Vertex
 	{
 	public:
-		Vertex(float x, float y, float z);
-		Vertex(float x, float y, float z, float w);
-		Vertex(const glm::vec4 &position);
+		Vertex(const glm::vec4 &position, const glm::vec4 &color);
+		Vertex(float x, float y, float z, float w, float r, float g, float b, float a);
 
 		float x() const;
 		float y() const;
 		float z() const;
 		float w() const;
+		const glm::vec4 &Vertex::color() const;
 		Vertex transform(const glm::mat4 &transform) const;
 		Vertex perspective_divide() const;
 		Vertex screen_space_transform(float half_width, float half_height) const;
 
 	private:
+		Vertex(float x, float y, float z, float w, const glm::vec4 &color);
+
 		glm::vec4 position_;
+		glm::vec4 color_;
 	};
 
 }
