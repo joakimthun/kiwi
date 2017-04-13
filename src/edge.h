@@ -2,8 +2,6 @@
 
 #include <stdint.h>
 
-#include "glm/vec4.hpp"
-
 #include "vertex.h"
 #include "gradients.h"
 
@@ -18,15 +16,18 @@ namespace kiwi {
 		float x() const;
 		int32_t y_start() const;
 		int32_t y_end() const;
-		const glm::vec4 &color() const;
+		float text_coord_x() const;
+		float text_coord_y() const;
 
 	private:
 		float x_;
 		float x_step_;
 		int32_t y_start_;
 		int32_t y_end_;
-		glm::vec4 color_;
-		glm::vec4 color_step_;
+		float text_coord_x_;
+		float text_coord_x_step_;
+		float text_coord_y_;
+		float text_coord_y_step_;
 	};
 
 }

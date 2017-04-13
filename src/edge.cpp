@@ -18,17 +18,24 @@ namespace kiwi {
 
 		float x_prestep = x_ - min_y.x();
 
-		const auto color_y_step = gradients.color_y_step();
-		const auto color_x_step = gradients.color_x_step();
+		text_coord_x_ = gradients.get_text_coord_x(min_y_index) +
+			gradients.text_coord_xx_step() * x_prestep +
+			gradients.text_coord_xy_step() * y_prestep;
 
-		color_ = gradients.get_color(min_y_index) + ((color_y_step * y_prestep) + (color_x_step * x_prestep));
-		color_step_ = color_y_step + (color_x_step * x_step_);
+		text_coord_x_step_ = gradients.text_coord_xy_step() + gradients.text_coord_xx_step() * x_step_;
+
+		text_coord_y_ = gradients.get_text_coord_y(min_y_index) +
+			gradients.text_coord_yx_step() * x_prestep +
+			gradients.text_coord_yy_step() * y_prestep;
+
+		text_coord_y_step_ = gradients.text_coord_yy_step() + gradients.text_coord_yx_step() * x_step_;
 	}
 
 	void Edge::step()
 	{
 		x_ += x_step_;
-		color_ += color_step_;
+		text_coord_x_ += text_coord_x_step_;
+		text_coord_y_ += text_coord_y_step_;
 	}
 
 	float Edge::x() const
@@ -46,9 +53,13 @@ namespace kiwi {
 		return y_end_;
 	}
 
-	const glm::vec4 &Edge::color() const
+	float Edge::text_coord_x() const
 	{
-		return color_;
+		return text_coord_x_;
 	}
 
+	float Edge::text_coord_y() const
+	{
+		return text_coord_y_;
+	}
 }

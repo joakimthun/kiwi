@@ -50,7 +50,7 @@ namespace kiwi {
 		back_buffer_[index + 2] = r;
 	}
 
-	void Renderer::fill_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3)
+	void Renderer::fill_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3, const Bitmap &texture)
 	{
 		auto min_y = v1.screen_space_transform(half_width_, half_height_).perspective_divide();
 		auto mid_y = v2.screen_space_transform(half_width_, half_height_).perspective_divide();
@@ -71,10 +71,10 @@ namespace kiwi {
 
 		const auto area_sign = triangle_area_sign(min_y, max_y, mid_y);
 
-		scan_triangle(min_y, mid_y, max_y, area_sign == TriangleAreaSign::Positive);
+		scan_triangle(min_y, mid_y, max_y, area_sign == TriangleAreaSign::Positive, texture);
 	}
 
-	void Renderer::scan_triangle(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, bool handedness)
+	void Renderer::scan_triangle(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, bool handedness, const Bitmap &texture)
 	{
 		const auto gradients = Gradients(min_y, mid_y, max_y);
 
@@ -82,11 +82,11 @@ namespace kiwi {
 		auto top_to_middle = Edge(gradients, min_y, mid_y, 0);
 		auto middle_to_bottom = Edge(gradients, mid_y, max_y, 1);
 
-		scan_edges(gradients, top_to_bottom, top_to_middle, handedness);
-		scan_edges(gradients, top_to_bottom, middle_to_bottom, handedness);
+		scan_edges(gradients, top_to_bottom, top_to_middle, handedness, texture);
+		scan_edges(gradients, top_to_bottom, middle_to_bottom, handedness, texture);
 	}
 
-	void Renderer::scan_edges(const Gradients &gradients, Edge &a, Edge &b, bool handedness)
+	void Renderer::scan_edges(const Gradients &gradients, Edge &a, Edge &b, bool handedness, const Bitmap &texture)
 	{
 		auto *left = &a;
 		auto *right = &b;
@@ -101,31 +101,39 @@ namespace kiwi {
 
 		for (auto i = y_start; i < y_end; i++)
 		{
-			draw_scan_line(gradients, *left, *right, i);
+			draw_scan_line(gradients, *left, *right, i, texture);
 			left->step();
 			right->step();
 		}
 	}
 
-	void Renderer::draw_scan_line(const Gradients &gradients, const Edge &left, const Edge &right, int32_t i)
+	void Renderer::draw_scan_line(const Gradients &gradients, const Edge &left, const Edge &right, int32_t i, const Bitmap &texture)
 	{
 		const auto min_x = static_cast<int32_t>(ceil(left.x()));
 		const auto max_x = static_cast<int32_t>(ceil(right.x()));
 
-		auto x_prestep = min_x - left.x();
-		const auto color_x_step = gradients.color_x_step();
-		auto color = left.color() + (color_x_step * x_prestep);
+		const auto x_prestep = min_x - left.x();
+		auto text_coord_x = left.text_coord_x() + gradients.text_coord_xx_step() * x_prestep;
+		auto text_coord_y = left.text_coord_y() + gradients.text_coord_yx_step() * x_prestep;
 
 		for (auto j = min_x; j < max_x; j++)
 		{
-			// Colors are in the 0.0  1.0 range
-			const auto r = static_cast<uint8_t>(color.x * 255.0f + 0.5f);
-			const auto g = static_cast<uint8_t>(color.y * 255.0f + 0.5f);
-			const auto b = static_cast<uint8_t>(color.z * 255.0f + 0.5f);
+			const auto src_x = static_cast<int32_t>(text_coord_x * (texture.width() - 1) + 0.5f);
+			const auto src_y = static_cast<int32_t>(text_coord_y * (texture.height() - 1) + 0.5f);
 
-			put_pixel(j, i, r, g, b);
-			color = color + color_x_step;
+			copy_pixel(j, i, src_x, src_y, texture);
+			text_coord_x += gradients.text_coord_xx_step();
+			text_coord_y += gradients.text_coord_yx_step();
 		}
+	}
+
+	void Renderer::copy_pixel(int32_t dest_x, uint32_t dest_y, int32_t src_x, uint32_t src_y, const Bitmap& src)
+	{
+		const auto dest_index = (dest_x + dest_y * width_) * 3;
+		const auto src_index = (src_x + src_y * src.width()) * 3;
+		back_buffer_[dest_index] = src.get_component(src_index);
+		back_buffer_[dest_index + 1] = src.get_component(src_index + 1);
+		back_buffer_[dest_index + 2] = src.get_component(src_index + 2);
 	}
 
 }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <array>
-#include "glm/vec4.hpp"
 
 #include "vertex.h"
 
@@ -12,14 +11,20 @@ namespace kiwi {
 	public:
 		Gradients(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y);
 
-		const glm::vec4 &get_color(std::size_t index) const;
-		const glm::vec4 &color_x_step() const;
-		const glm::vec4 &color_y_step() const;
+		const float get_text_coord_x(std::size_t index) const;
+		const float get_text_coord_y(std::size_t index) const;
+		float text_coord_xx_step() const;
+		float text_coord_xy_step() const;
+		float text_coord_yx_step() const;
+		float text_coord_yy_step() const;
 
 	private:
-		std::array<glm::vec4, 3> colors_;
-		glm::vec4 color_x_step_;
-		glm::vec4 color_y_step_;
+		std::array<float, 3> text_coords_x_;
+		std::array<float, 3> text_coords_y_;
+		float text_coord_xx_step_;
+		float text_coord_xy_step_;
+		float text_coord_yx_step_;
+		float text_coord_yy_step_;
 	};
 
 }

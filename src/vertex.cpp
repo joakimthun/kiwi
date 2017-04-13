@@ -2,17 +2,17 @@
 
 namespace kiwi {
 
-	Vertex::Vertex(const glm::vec4& position, const glm::vec4 &color)
+	Vertex::Vertex(const glm::vec4& position, const glm::vec4 &text_coords)
 		:
 		position_(position),
-		color_(color)
+		text_coords_(text_coords)
 	{
 	}
 
 	Vertex::Vertex(float x, float y, float z, float w, float r, float g, float b, float a)
 		:
 		position_(glm::vec4(x, y, z, w)),
-		color_(r, g, b, a)
+		text_coords_(r, g, b, a)
 	{
 	}
 
@@ -36,14 +36,14 @@ namespace kiwi {
 		return position_.w;
 	}
 
-	const glm::vec4 &Vertex::color() const
+	const glm::vec4 & Vertex::text_coords() const
 	{
-		return color_;
+		return text_coords_;
 	}
 
 	Vertex Vertex::transform(const glm::mat4 &transform) const
 	{
-		return Vertex(transform * position_, color_);
+		return Vertex(transform * position_, text_coords_);
 	}
 
 	Vertex Vertex::perspective_divide() const
@@ -53,7 +53,7 @@ namespace kiwi {
 			position_.y / position_.w,
 			position_.z / position_.w,
 			position_.w,
-			color_);
+			text_coords_);
 	}
 
 	Vertex Vertex::screen_space_transform(float half_width, float half_height) const
@@ -63,13 +63,13 @@ namespace kiwi {
 			-half_height * y() + half_height * w(),
 			z(), 
 			w(),
-			color_);
+			text_coords_);
 	}
 
-	Vertex::Vertex(float x, float y, float z, float w, const glm::vec4 &color)
+	Vertex::Vertex(float x, float y, float z, float w, const glm::vec4 &text_coords)
 		:
 		position_(glm::vec4(x, y, z, w)),
-		color_(color)
+		text_coords_(text_coords)
 	{
 	}
 
