@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <math.h>
+#include <float.h>
 #include "glm/vec4.hpp"
 #include "glm/mat4x4.hpp"
 
@@ -16,11 +17,30 @@ namespace kiwi {
 		half_width_(static_cast<float>(render_target.width() / 2)),
 		half_height_(static_cast<float>(render_target.height() / 2))
 	{
+		depth_buffer_size_ = render_target.width() * render_target.height();
+		depth_buffer_ = (float*)calloc(depth_buffer_size_, sizeof(float));
+	}
+
+	Renderer::~Renderer()
+	{
+		if (depth_buffer_)
+		{
+			free(depth_buffer_);
+			depth_buffer_ = nullptr;
+		}
 	}
 
 	void Renderer::clear(uint8_t r, uint8_t g, uint8_t b)
 	{
 		render_target_.clear(r, g, b);
+	}
+
+	void Renderer::clear_depth_buffer()
+	{
+		for (auto i = 0; i < depth_buffer_size_; i++)
+		{
+			depth_buffer_[i] = FLT_MAX;
+		}
 	}
 
 	void Renderer::draw_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3, const Bitmap &texture)
@@ -107,23 +127,33 @@ namespace kiwi {
 		const auto tex_coord_xx_step = (right.text_coord_x() - left.text_coord_x()) / x_dist;
 		const auto tex_coord_yx_step = (right.text_coord_y() - left.text_coord_y()) / x_dist;
 		const auto one_over_zx_step = (right.one_over_z() - left.one_over_z()) / x_dist;
+		const auto depth_x_step = (right.depth() - left.depth()) / x_dist;
 
 		auto tex_coord_x = left.text_coord_x() + tex_coord_xx_step * x_prestep;
 		auto tex_coord_y = left.text_coord_y() + tex_coord_yx_step * x_prestep;
 		auto one_over_z = left.one_over_z() + one_over_zx_step * x_prestep;
+		auto depth = left.depth() + depth_x_step * x_prestep;
 
 		for (auto j = min_x; j < max_x; j++)
 		{
-			const auto z = 1.0f / one_over_z;
+			auto depth_buffer_index = i + j * render_target_.width();
 
-			const auto src_x = static_cast<int32_t>(((tex_coord_x * z) * (float)(texture.width() - 1) + 0.5f));
-			const auto src_y = static_cast<int32_t>(((tex_coord_y * z) * (float)(texture.height() - 1) + 0.5f));
+			// Only draw the pixel if it's closer to the camera than the pixel currently in the depth buffer
+			if (depth < depth_buffer_[depth_buffer_index])
+			{
+				depth_buffer_[depth_buffer_index] = depth;
+				const auto z = 1.0f / one_over_z;
 
-			render_target_.copy_pixel(j, i, src_x, src_y, texture);
+				const auto src_x = static_cast<int32_t>(((tex_coord_x * z) * (float)(texture.width() - 1) + 0.5f));
+				const auto src_y = static_cast<int32_t>(((tex_coord_y * z) * (float)(texture.height() - 1) + 0.5f));
+
+				render_target_.copy_pixel(j, i, src_x, src_y, texture);
+			}
 
 			one_over_z += one_over_zx_step;
 			tex_coord_x += tex_coord_xx_step;
 			tex_coord_y += tex_coord_yx_step;
+			depth += depth_x_step;
 		}
 	}
 }

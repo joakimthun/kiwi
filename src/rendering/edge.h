@@ -19,6 +19,7 @@ namespace kiwi {
 		float text_coord_x() const;
 		float text_coord_y() const;
 		float one_over_z() const;
+		float depth() const;
 
 	private:
 		float x_;
@@ -31,6 +32,8 @@ namespace kiwi {
 		float text_coord_y_step_;
 		float one_over_z_;
 		float one_over_z_step_;
+		float depth_;
+		float depth_step_;
 	};
 
 }

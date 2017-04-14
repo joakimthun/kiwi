@@ -30,8 +30,11 @@ namespace kiwi {
 
 		text_coord_y_step_ = gradients.text_coord_yy_step() + gradients.text_coord_yx_step() * x_step_;
 
-		one_over_z_ = gradients.one_over_z(min_y_index) + gradients.one_over_zx_step() * x_prestep + gradients.one_over_zy_step() * y_prestep;
+		one_over_z_ = gradients.get_one_over_z(min_y_index) + gradients.one_over_zx_step() * x_prestep + gradients.one_over_zy_step() * y_prestep;
 		one_over_z_step_ = gradients.one_over_zy_step() + gradients.one_over_zx_step() * x_step_;
+
+		depth_ = gradients.get_depth(min_y_index) + gradients.depth_x_step() * x_prestep + gradients.depth_y_step() * y_prestep;
+		depth_step_ = gradients.depth_y_step() + gradients.depth_x_step() * x_step_;
 	}	
 
 	void Edge::step()
@@ -40,6 +43,7 @@ namespace kiwi {
 		text_coord_x_ += text_coord_x_step_;
 		text_coord_y_ += text_coord_y_step_;
 		one_over_z_ += one_over_z_step_;
+		depth_ += depth_step_;
 	}
 
 	float Edge::x() const
@@ -69,5 +73,9 @@ namespace kiwi {
 	float Edge::one_over_z() const
 	{
 		return one_over_z_;
+	}
+	float Edge::depth() const
+	{
+		return depth_;
 	}
 }

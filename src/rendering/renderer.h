@@ -15,8 +15,10 @@ namespace kiwi {
 	{
 	public:
 		Renderer(Bitmap &render_target);
+		~Renderer();
 
 		void clear(uint8_t r, uint8_t g, uint8_t b);
+		void clear_depth_buffer();
 		void draw_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3, const Bitmap &texture);
 		void draw_mesh(const Mesh &mesh, const glm::mat4 &transform, const Bitmap &texture);
 	private:
@@ -25,6 +27,8 @@ namespace kiwi {
 		void draw_scan_line(const Edge &left, const Edge &right, int32_t i, const Bitmap &texture);
 
 		Bitmap &render_target_;
+		float* depth_buffer_;
+		std::size_t depth_buffer_size_;
 		const float half_width_;
 		const float half_height_;
 	};

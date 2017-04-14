@@ -25,12 +25,20 @@ namespace kiwi {
 		text_coords_y_[1] = mid_y.text_coords().y * one_over_z_[1];
 		text_coords_y_[2] = max_y.text_coords().y * one_over_z_[2];
 
+		depth_[0] = min_y.z();
+		depth_[1] = mid_y.z();
+		depth_[2] = max_y.z();
+
 		text_coord_xx_step_ = calc_x_step(text_coords_x_, min_y, mid_y, max_y, one_over_dx);
 		text_coord_xy_step_ = calc_y_step(text_coords_x_, min_y, mid_y, max_y, one_over_dy);
 		text_coord_yx_step_ = calc_x_step(text_coords_y_, min_y, mid_y, max_y, one_over_dx);
 		text_coord_yy_step_ = calc_y_step(text_coords_y_, min_y, mid_y, max_y, one_over_dy);
+
 		one_over_zx_step_ = calc_x_step(one_over_z_, min_y, mid_y, max_y, one_over_dx);
 		one_over_zy_step_ = calc_y_step(one_over_z_, min_y, mid_y, max_y, one_over_dy);
+
+		depth_x_step_ = calc_x_step(depth_, min_y, mid_y, max_y, one_over_dx);
+		depth_y_step_ = calc_y_step(depth_, min_y, mid_y, max_y, one_over_dy);
 	}
 
 	float Gradients::get_text_coord_x(std::size_t index) const
@@ -43,7 +51,12 @@ namespace kiwi {
 		return text_coords_y_[index];
 	}
 
-	float Gradients::one_over_z(std::size_t index) const
+	float Gradients::get_depth(std::size_t index) const
+	{
+		return depth_[index];
+	}
+
+	float Gradients::get_one_over_z(std::size_t index) const
 	{
 		return one_over_z_[index];
 	}
@@ -76,6 +89,16 @@ namespace kiwi {
 	float Gradients::one_over_zy_step() const
 	{
 		return one_over_zy_step_;
+	}
+
+	float Gradients::depth_x_step() const
+	{
+		return depth_x_step_;
+	}
+
+	float Gradients::depth_y_step() const
+	{
+		return depth_y_step_;
 	}
 
 	float Gradients::calc_x_step(const std::array<float, 3> values, const Vertex & min_y, const Vertex & mid_y, const Vertex & max_y, float one_over_dx)
