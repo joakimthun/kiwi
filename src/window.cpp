@@ -7,7 +7,8 @@ namespace kiwi {
 	Window::Window(int32_t width, int32_t height)
 		:
 		width_(width),
-		height_(height)
+		height_(height),
+		display_buffer_(width, height)
 	{
 		hinstance_ = GetModuleHandle(NULL);
 
@@ -60,10 +61,7 @@ namespace kiwi {
 		// Set "this" as user data so we can grab it in WindowProc
 		SetWindowLongPtr(hwnd_, GWLP_USERDATA, (LONG_PTR)this);
 
-		// Setup back buffer and the BITMAPINFOHEADER
-		back_buffer_size_ = width * height * 3;
-		back_buffer_ = (uint8_t*)calloc(back_buffer_size_, 1);
-
+		// Setup the BITMAPINFOHEADER
 		bitmap_info_.biSize = sizeof(bitmap_info_);
 		bitmap_info_.biWidth = width;
 
@@ -76,15 +74,6 @@ namespace kiwi {
 		bitmap_info_.biCompression = BI_RGB;
 	}
 
-	Window::~Window()
-	{
-		if (back_buffer_)
-		{
-			free(back_buffer_);
-			back_buffer_ = nullptr;
-		}
-	}
-
 	void Window::open()
 	{
 		ShowWindow(hwnd_, SW_SHOW);
@@ -94,6 +83,11 @@ namespace kiwi {
 	void Window::update()
 	{
 		RedrawWindow(hwnd_, NULL, NULL, RDW_INVALIDATE);
+	}
+
+	Bitmap &Window::display_buffer()
+	{
+		return display_buffer_;
 	}
 
 	LRESULT  Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -108,7 +102,7 @@ namespace kiwi {
 			StretchDIBits(dc,
 				0, 0, window->width_, window->height_,
 				0, 0, window->width_, window->height_,
-				window->back_buffer_, (BITMAPINFO*)&window->bitmap_info_,
+				window->display_buffer_.data(), (BITMAPINFO*)&window->bitmap_info_,
 				DIB_RGB_COLORS, SRCCOPY);
 			
 			ReleaseDC(hWnd, dc);

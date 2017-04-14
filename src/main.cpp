@@ -21,12 +21,12 @@ int main(int argc, char* argv[])
 	Window window(800, 600);
 	window.open();
 
-	Renderer renderer(&window);
+	Renderer renderer(window.display_buffer());
 	renderer.clear(0x00, 0x00, 0x00);
 
 	const auto mesh = Mesh("assets/icosphere.obj");
 
-	auto texture = Bitmap(32, 32);
+	auto texture = Bitmap(64, 64);
 	for (auto j = 0; j < texture.height(); j++)
 	{
 		for (auto i = 0; i < texture.width(); i++)

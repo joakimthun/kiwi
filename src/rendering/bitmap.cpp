@@ -32,12 +32,42 @@ namespace kiwi {
 		return height_;
 	}
 
+	const uint8_t *Bitmap::data() const
+	{
+		return data_;
+	}
+
+	uint64_t Bitmap::data_size() const
+	{
+		return data_size_;
+	}
+
+	void Bitmap::clear(uint8_t r, uint8_t g, uint8_t b)
+	{
+		for (auto i = 0; i < data_size_; i += 3)
+		{
+			data_[i] = b;
+			data_[i + 1] = g;
+			data_[i + 2] = r;
+		}
+	}
+
 	void Bitmap::put_pixel(int32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b)
 	{
 		int index = (x + y * width_) * 3;
 		data_[index] = b;
 		data_[index + 1] = g;
 		data_[index + 2] = r;
+	}
+
+	void Bitmap::copy_pixel(int32_t dest_x, uint32_t dest_y, int32_t src_x, uint32_t src_y, const Bitmap& src)
+	{
+		const auto dest_index = (dest_x + dest_y * width_) * 3;
+		const auto src_index = (src_x + src_y * src.width_) * 3;
+
+		data_[dest_index] = src.get_component(src_index);
+		data_[dest_index + 1] = src.get_component(src_index + 1);
+		data_[dest_index + 2] = src.get_component(src_index + 2);
 	}
 
 	uint8_t Bitmap::get_component(std::size_t index) const

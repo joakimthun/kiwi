@@ -10,47 +10,20 @@
 
 namespace kiwi {
 
-	Renderer::Renderer(Window *window)
+	Renderer::Renderer(Bitmap &render_target)
 		:
-		window_(window),
-		width_(window->width_),
-		height_(window->height_),
-		half_width_(static_cast<float>(width_ / 2)),
-		half_height_(static_cast<float>(height_ / 2)),
-		back_buffer_(window->back_buffer_),
-		back_buffer_size_(window->back_buffer_size_)
+		render_target_(render_target),
+		half_width_(static_cast<float>(render_target.width() / 2)),
+		half_height_(static_cast<float>(render_target.height() / 2))
 	{
-	}
-
-	int32_t Renderer::width()
-	{
-		return width_;
-	}
-
-	int32_t Renderer::height()
-	{
-		return height_;
 	}
 
 	void Renderer::clear(uint8_t r, uint8_t g, uint8_t b)
 	{
-		for (auto i = 0; i < back_buffer_size_; i += 3)
-		{
-			back_buffer_[i] = b;
-			back_buffer_[i + 1] = g;
-			back_buffer_[i + 2] = r;
-		}
+		render_target_.clear(r, g, b);
 	}
 
-	void Renderer::put_pixel(int32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b)
-	{
-		int index = (x + y * width_) * 3;
-		back_buffer_[index] = b;
-		back_buffer_[index + 1] = g;
-		back_buffer_[index + 2] = r;
-	}
-
-	void Renderer::fill_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3, const Bitmap &texture)
+	void Renderer::draw_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3, const Bitmap &texture)
 	{
 		auto min_y = v1.screen_space_transform(half_width_, half_height_).perspective_divide();
 		auto mid_y = v2.screen_space_transform(half_width_, half_height_).perspective_divide();
@@ -82,7 +55,7 @@ namespace kiwi {
 	{
 		for (auto i = 0; i < mesh.num_indices(); i += 3)
 		{
-			fill_triangle(
+			draw_triangle(
 				mesh.get_vertex(mesh.get_index(i)).transform(transform),
 				mesh.get_vertex(mesh.get_index(i + 1)).transform(transform),
 				mesh.get_vertex(mesh.get_index(i + 2)).transform(transform),
@@ -146,21 +119,11 @@ namespace kiwi {
 			const auto src_x = static_cast<int32_t>(((tex_coord_x * z) * (float)(texture.width() - 1) + 0.5f));
 			const auto src_y = static_cast<int32_t>(((tex_coord_y * z) * (float)(texture.height() - 1) + 0.5f));
 
-			copy_pixel(j, i, src_x, src_y, texture);
+			render_target_.copy_pixel(j, i, src_x, src_y, texture);
 
 			one_over_z += one_over_zx_step;
 			tex_coord_x += tex_coord_xx_step;
 			tex_coord_y += tex_coord_yx_step;
 		}
 	}
-
-	void Renderer::copy_pixel(int32_t dest_x, uint32_t dest_y, int32_t src_x, uint32_t src_y, const Bitmap& src)
-	{
-		const auto dest_index = (dest_x + dest_y * width_) * 3;
-		const auto src_index = (src_x + src_y * src.width()) * 3;
-		back_buffer_[dest_index] = src.get_component(src_index);
-		back_buffer_[dest_index + 1] = src.get_component(src_index + 1);
-		back_buffer_[dest_index + 2] = src.get_component(src_index + 2);
-	}
-
 }
