@@ -3,24 +3,36 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <memory>
 #include "glm/vec4.hpp"
+
+#include "indexed_model.h"
 
 namespace kiwi {
 	namespace models {
 
 		struct OBJIndex
 		{
-			int32_t vertex;
-			int32_t text_coord;
-			int32_t normal;
+			std::size_t vertex;
+			std::size_t text_coord;
+			std::size_t normal;
+
+			bool operator==(const OBJIndex &other) const
+			{
+				return vertex == other.vertex
+					&& text_coord == other.text_coord
+					&& normal == other.normal;
+			}
 		};
 
 		class Obj
 		{
 		public:
-			Obj(const std::string &filename);
+			static std::unique_ptr<IndexedModel> from_file(const std::string &filename);
 
-		private: 
+		private:
+			Obj(const std::string &filename);
+			std::unique_ptr<IndexedModel> to_indexed_model();
 			void load(const std::string &filename);
 			OBJIndex parse_obj_index(const std::string &token);
 

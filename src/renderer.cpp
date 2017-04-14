@@ -56,6 +56,10 @@ namespace kiwi {
 		auto mid_y = v2.screen_space_transform(half_width_, half_height_).perspective_divide();
 		auto max_y = v3.screen_space_transform(half_width_, half_height_).perspective_divide();
 
+		// Don't draw triangles not facing the camera
+		if (triangle_area_sign(min_y, max_y, mid_y) == TriangleAreaSign::Positive)
+			return;
+
 		// First, sort vertices by y-coord
 		// If max is less then mid, swap em
 		if (max_y.y() < mid_y.y())
@@ -72,6 +76,18 @@ namespace kiwi {
 		const auto area_sign = triangle_area_sign(min_y, max_y, mid_y);
 
 		scan_triangle(min_y, mid_y, max_y, area_sign == TriangleAreaSign::Positive, texture);
+	}
+
+	void Renderer::draw_mesh(const Mesh & mesh, const glm::mat4 &transform, const Bitmap & texture)
+	{
+		for (auto i = 0; i < mesh.num_indices(); i += 3)
+		{
+			fill_triangle(
+				mesh.get_vertex(mesh.get_index(i)).transform(transform),
+				mesh.get_vertex(mesh.get_index(i + 1)).transform(transform),
+				mesh.get_vertex(mesh.get_index(i + 2)).transform(transform),
+				texture);
+		}
 	}
 
 	void Renderer::scan_triangle(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, bool handedness, const Bitmap &texture)

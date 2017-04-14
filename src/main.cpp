@@ -9,7 +9,7 @@
 #include "renderer.h"
 #include "vertex.h"
 #include "bitmap.h"
-#include "models/obj.h"
+#include "mesh.h"
 
 using namespace kiwi;
 
@@ -24,9 +24,9 @@ int main(int argc, char* argv[])
 	Renderer renderer(&window);
 	renderer.clear(0x00, 0x00, 0x00);
 
-	const auto model = models::Obj("assets/icosphere.obj");
+	const auto mesh = Mesh("assets/icosphere.obj");
 
-	auto texture = Bitmap(128, 128);
+	auto texture = Bitmap(512, 512);
 	for (auto j = 0; j < texture.height(); j++)
 	{
 		for (auto i = 0; i < texture.width(); i++)
@@ -72,7 +72,8 @@ int main(int argc, char* argv[])
 		const auto rotation = glm::rotate(translation, rotation_v, glm::vec3(0.0f, 1.0f, 0.0f));
 		const auto transform = projection * translation * rotation;
 
-		renderer.fill_triangle(min_y.transform(transform), mid_y.transform(transform), max_y.transform(transform), texture);
+		renderer.draw_mesh(mesh, transform, texture);
+		//renderer.fill_triangle(min_y.transform(transform), mid_y.transform(transform), max_y.transform(transform), texture);
 
 		window.update();
 	}
