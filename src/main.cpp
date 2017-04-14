@@ -6,10 +6,10 @@
 
 #include "util.h"
 #include "window.h"
-#include "renderer.h"
+#include "rendering/renderer.h"
 #include "geometry/vertex.h"
-#include "bitmap.h"
-#include "mesh.h"
+#include "rendering/bitmap.h"
+#include "geometry/mesh.h"
 
 using namespace kiwi;
 
@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 
 	const auto mesh = Mesh("assets/icosphere.obj");
 
-	auto texture = Bitmap(128, 128);
+	auto texture = Bitmap(32, 32);
 	for (auto j = 0; j < texture.height(); j++)
 	{
 		for (auto i = 0; i < texture.width(); i++)

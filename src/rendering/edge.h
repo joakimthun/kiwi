@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-#include "geometry/vertex.h"
+#include "../geometry/vertex.h"
 #include "gradients.h"
 
 namespace kiwi {

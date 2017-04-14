@@ -1,12 +1,12 @@
 #include "mesh.h"
 
-#include "models/obj.h"
+#include "../models/obj_model.h"
 
 namespace kiwi {
 
 	Mesh::Mesh(const std::string &filename)
 	{
-		model_ = models::Obj::from_file(filename);
+		model_ = ObjModel::from_file(filename);
 
 		for (auto i = 0; i < model_->positions().size(); i++)
 		{

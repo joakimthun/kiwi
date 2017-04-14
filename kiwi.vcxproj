@@ -141,28 +141,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\bitmap.cpp" />
-    <ClCompile Include="src\edge.cpp" />
-    <ClCompile Include="src\gradients.cpp" />
+    <ClCompile Include="src\rendering\bitmap.cpp" />
+    <ClCompile Include="src\rendering\edge.cpp" />
+    <ClCompile Include="src\rendering\gradients.cpp" />
     <ClCompile Include="src\kiwi_exception.cpp" />
-    <ClCompile Include="src\mesh.cpp" />
+    <ClCompile Include="src\geometry\mesh.cpp" />
     <ClCompile Include="src\models\indexed_model.cpp" />
-    <ClCompile Include="src\models\obj.cpp" />
+    <ClCompile Include="src\models\obj_model.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\renderer.cpp" />
+    <ClCompile Include="src\rendering\renderer.cpp" />
     <ClCompile Include="src\util.cpp" />
     <ClCompile Include="src\geometry\vertex.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\bitmap.h" />
-    <ClInclude Include="src\edge.h" />
-    <ClInclude Include="src\gradients.h" />
+    <ClInclude Include="src\rendering\bitmap.h" />
+    <ClInclude Include="src\rendering\edge.h" />
+    <ClInclude Include="src\rendering\gradients.h" />
     <ClInclude Include="src\kiwi_exception.h" />
-    <ClInclude Include="src\mesh.h" />
+    <ClInclude Include="src\geometry\mesh.h" />
     <ClInclude Include="src\models\indexed_model.h" />
-    <ClInclude Include="src\models\obj.h" />
-    <ClInclude Include="src\renderer.h" />
+    <ClInclude Include="src\models\obj_model.h" />
+    <ClInclude Include="src\rendering\renderer.h" />
     <ClInclude Include="src\util.h" />
     <ClInclude Include="src\geometry\vertex.h" />
     <ClInclude Include="src\window.h" />

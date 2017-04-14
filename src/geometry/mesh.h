@@ -4,8 +4,8 @@
 #include <string>
 #include <memory>
 
-#include "geometry/vertex.h"
-#include "models/indexed_model.h"
+#include "vertex.h"
+#include "../models/indexed_model.h"
 
 namespace kiwi {
 
@@ -21,7 +21,7 @@ namespace kiwi {
 
 	private:
 		std::vector<Vertex> vertices_;
-		std::unique_ptr<models::IndexedModel> model_;
+		std::unique_ptr<IndexedModel> model_;
 	};
 
 }

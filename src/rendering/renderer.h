@@ -4,10 +4,10 @@
 #include <vector>
 #include "glm/mat4x4.hpp"
 
-#include "geometry/vertex.h"
+#include "../geometry/vertex.h"
 #include "edge.h"
 #include "bitmap.h"
-#include "mesh.h"
+#include "../geometry/mesh.h"
 
 namespace kiwi {
 
