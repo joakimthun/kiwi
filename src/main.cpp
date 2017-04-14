@@ -7,7 +7,7 @@
 #include "util.h"
 #include "window.h"
 #include "renderer.h"
-#include "vertex.h"
+#include "geometry/vertex.h"
 #include "bitmap.h"
 #include "mesh.h"
 
@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 
 	const auto mesh = Mesh("assets/icosphere.obj");
 
-	auto texture = Bitmap(512, 512);
+	auto texture = Bitmap(128, 128);
 	for (auto j = 0; j < texture.height(); j++)
 	{
 		for (auto i = 0; i < texture.width(); i++)

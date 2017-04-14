@@ -152,7 +152,7 @@
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\stars.cpp" />
     <ClCompile Include="src\util.cpp" />
-    <ClCompile Include="src\vertex.cpp" />
+    <ClCompile Include="src\geometry\vertex.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,7 +166,7 @@
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\stars.h" />
     <ClInclude Include="src\util.h" />
-    <ClInclude Include="src\vertex.h" />
+    <ClInclude Include="src\geometry\vertex.h" />
     <ClInclude Include="src\window.h" />
   </ItemGroup>
   <ItemGroup>

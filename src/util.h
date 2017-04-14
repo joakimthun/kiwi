@@ -7,7 +7,7 @@
 
 #include "glm/vec4.hpp"
 
-#include "vertex.h"
+#include "geometry/vertex.h"
 
 namespace kiwi {
 	

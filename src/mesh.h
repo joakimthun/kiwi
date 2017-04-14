@@ -4,7 +4,7 @@
 #include <string>
 #include <memory>
 
-#include "vertex.h"
+#include "geometry/vertex.h"
 #include "models/indexed_model.h"
 
 namespace kiwi {

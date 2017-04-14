@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include "vertex.h"
+#include "geometry/vertex.h"
 
 namespace kiwi {
 
