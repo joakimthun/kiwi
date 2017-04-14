@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include "../util.h"
+#include "../kiwi_exception.h"
 
 namespace kiwi {
 
@@ -122,7 +123,7 @@ namespace kiwi {
 		std::ifstream file(filename);
 
 		if (!file.is_open())
-			return;
+			throw KiwiException("Could not open file: " + filename);
 
 		while (std::getline(file, line))
 		{
