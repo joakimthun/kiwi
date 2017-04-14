@@ -82,11 +82,11 @@ namespace kiwi {
 		auto top_to_middle = Edge(gradients, min_y, mid_y, 0);
 		auto middle_to_bottom = Edge(gradients, mid_y, max_y, 1);
 
-		scan_edges(gradients, top_to_bottom, top_to_middle, handedness, texture);
-		scan_edges(gradients, top_to_bottom, middle_to_bottom, handedness, texture);
+		scan_edges(top_to_bottom, top_to_middle, handedness, texture);
+		scan_edges(top_to_bottom, middle_to_bottom, handedness, texture);
 	}
 
-	void Renderer::scan_edges(const Gradients &gradients, Edge &a, Edge &b, bool handedness, const Bitmap &texture)
+	void Renderer::scan_edges(Edge &a, Edge &b, bool handedness, const Bitmap &texture)
 	{
 		auto *left = &a;
 		auto *right = &b;
@@ -101,29 +101,40 @@ namespace kiwi {
 
 		for (auto i = y_start; i < y_end; i++)
 		{
-			draw_scan_line(gradients, *left, *right, i, texture);
+			draw_scan_line(*left, *right, i, texture);
 			left->step();
 			right->step();
 		}
 	}
 
-	void Renderer::draw_scan_line(const Gradients &gradients, const Edge &left, const Edge &right, int32_t i, const Bitmap &texture)
+	void Renderer::draw_scan_line(const Edge &left, const Edge &right, int32_t i, const Bitmap &texture)
 	{
 		const auto min_x = static_cast<int32_t>(ceil(left.x()));
 		const auto max_x = static_cast<int32_t>(ceil(right.x()));
-
 		const auto x_prestep = min_x - left.x();
-		auto text_coord_x = left.text_coord_x() + gradients.text_coord_xx_step() * x_prestep;
-		auto text_coord_y = left.text_coord_y() + gradients.text_coord_yx_step() * x_prestep;
+
+		const auto x_dist = right.x() - left.x();
+
+		const auto tex_coord_xx_step = (right.text_coord_x() - left.text_coord_x()) / x_dist;
+		const auto tex_coord_yx_step = (right.text_coord_y() - left.text_coord_y()) / x_dist;
+		const auto one_over_zx_step = (right.one_over_z() - left.one_over_z()) / x_dist;
+
+		auto tex_coord_x = left.text_coord_x() + tex_coord_xx_step * x_prestep;
+		auto tex_coord_y = left.text_coord_y() + tex_coord_yx_step * x_prestep;
+		auto one_over_z = left.one_over_z() + one_over_zx_step * x_prestep;
 
 		for (auto j = min_x; j < max_x; j++)
 		{
-			const auto src_x = static_cast<int32_t>(text_coord_x * (texture.width() - 1) + 0.5f);
-			const auto src_y = static_cast<int32_t>(text_coord_y * (texture.height() - 1) + 0.5f);
+			const auto z = 1.0f / one_over_z;
+
+			const auto src_x = static_cast<int32_t>(((tex_coord_x * z) * (float)(texture.width() - 1) + 0.5f));
+			const auto src_y = static_cast<int32_t>(((tex_coord_y * z) * (float)(texture.height() - 1) + 0.5f));
 
 			copy_pixel(j, i, src_x, src_y, texture);
-			text_coord_x += gradients.text_coord_xx_step();
-			text_coord_y += gradients.text_coord_yx_step();
+
+			one_over_z += one_over_zx_step;
+			tex_coord_x += tex_coord_xx_step;
+			tex_coord_y += tex_coord_yx_step;
 		}
 	}
 

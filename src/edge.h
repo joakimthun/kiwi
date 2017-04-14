@@ -18,6 +18,7 @@ namespace kiwi {
 		int32_t y_end() const;
 		float text_coord_x() const;
 		float text_coord_y() const;
+		float one_over_z() const;
 
 	private:
 		float x_;
@@ -28,6 +29,8 @@ namespace kiwi {
 		float text_coord_x_step_;
 		float text_coord_y_;
 		float text_coord_y_step_;
+		float one_over_z_;
+		float one_over_z_step_;
 	};
 
 }

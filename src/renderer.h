@@ -25,8 +25,8 @@ namespace kiwi {
 		
 	private:
 		void scan_triangle(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, bool handedness, const Bitmap &texture);
-		void scan_edges(const Gradients &gradients, Edge &a, Edge &b, bool handedness, const Bitmap &texture);
-		void draw_scan_line(const Gradients &gradients, const Edge &left, const Edge &right, int32_t i, const Bitmap &texture);
+		void scan_edges(Edge &a, Edge &b, bool handedness, const Bitmap &texture);
+		void draw_scan_line(const Edge &left, const Edge &right, int32_t i, const Bitmap &texture);
 		void copy_pixel(int32_t dest_x, uint32_t dest_y, int32_t src_x, uint32_t src_y, const Bitmap &src);
 
 		Window *window_;

@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
 		1.0f, 0.0f, 0.0f, 0.0f);
 
 	glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.f / 600.f, -0.1f, 1000.0f);
-	glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.5f));
+	glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1.5f));
 	float rotation_v = 0.0f;
 
 	MSG msg = { 0 };
