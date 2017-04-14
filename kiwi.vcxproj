@@ -150,7 +150,6 @@
     <ClCompile Include="src\models\obj.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\renderer.cpp" />
-    <ClCompile Include="src\stars.cpp" />
     <ClCompile Include="src\util.cpp" />
     <ClCompile Include="src\geometry\vertex.cpp" />
     <ClCompile Include="src\window.cpp" />
@@ -164,7 +163,6 @@
     <ClInclude Include="src\models\indexed_model.h" />
     <ClInclude Include="src\models\obj.h" />
     <ClInclude Include="src\renderer.h" />
-    <ClInclude Include="src\stars.h" />
     <ClInclude Include="src\util.h" />
     <ClInclude Include="src\geometry\vertex.h" />
     <ClInclude Include="src\window.h" />
