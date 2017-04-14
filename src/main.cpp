@@ -9,6 +9,7 @@
 #include "renderer.h"
 #include "vertex.h"
 #include "bitmap.h"
+#include "models/obj.h"
 
 using namespace kiwi;
 
@@ -23,7 +24,9 @@ int main(int argc, char* argv[])
 	Renderer renderer(&window);
 	renderer.clear(0x00, 0x00, 0x00);
 
-	auto texture = Bitmap(32, 32);
+	const auto model = models::Obj("assets/icosphere.obj");
+
+	auto texture = Bitmap(128, 128);
 	for (auto j = 0; j < texture.height(); j++)
 	{
 		for (auto i = 0; i < texture.width(); i++)

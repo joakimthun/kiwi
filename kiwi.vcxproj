@@ -145,6 +145,7 @@
     <ClCompile Include="src\edge.cpp" />
     <ClCompile Include="src\gradients.cpp" />
     <ClCompile Include="src\kiwi_exception.cpp" />
+    <ClCompile Include="src\models\obj.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\stars.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="src\edge.h" />
     <ClInclude Include="src\gradients.h" />
     <ClInclude Include="src\kiwi_exception.h" />
+    <ClInclude Include="src\models\obj.h" />
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\stars.h" />
     <ClInclude Include="src\util.h" />

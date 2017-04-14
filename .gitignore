@@ -3,6 +3,7 @@
 
 # Custom
 .vs/
+assets/
 
 # User-specific files
 *.suo

@@ -1,6 +1,9 @@
 #include "util.h"
 
 #include <cstdlib>
+#include <sstream>
+#include <iterator>
+#include <algorithm>
 
 namespace kiwi {
 
@@ -21,5 +24,39 @@ namespace kiwi {
 
 		// Positive cross product?
 		return (x1 * y2 - x2 * y1) >= 0 ? TriangleAreaSign::Positive : TriangleAreaSign::Negative;
+	}
+
+	// http://stackoverflow.com/questions/236129/split-a-string-in-c++
+	template<typename Out>
+	void str_split(const std::string &s, char delim, Out result) {
+		std::stringstream ss;
+		ss.str(s);
+		std::string item;
+		while (std::getline(ss, item, delim)) {
+			*(result++) = item;
+		}
+	}
+
+	std::vector<std::string> remove_empty_str_entries(const std::vector<std::string> src)
+	{
+		std::vector<std::string> result;
+		std::back_insert_iterator<std::vector<std::string>> back_it(result);
+
+		std::copy_if(src.begin(), src.end(), back_it, [](const std::string &value)
+		{ 
+			return value != "" && value != " ";
+		});
+
+		return result;
+	}
+
+	std::vector<std::string> str_split(const std::string &s, char delim, RemoveEmptyEntries remove_empty_entries) {
+		std::vector<std::string> elems;
+		str_split(s, delim, std::back_inserter(elems));
+
+		if (remove_empty_entries == RemoveEmptyEntries::Yes)
+			return remove_empty_str_entries(elems);
+
+		return elems;
 	}
 }
