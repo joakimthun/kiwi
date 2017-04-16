@@ -10,6 +10,23 @@
 
 namespace kiwi {
 
+	constexpr inline float get_position_at(const Vertex &v, std::size_t index)
+	{
+		switch (index)
+		{
+		case 0:
+			return v.x();
+		case 1:
+			return v.y();
+		case 2:
+			return v.z();
+		case 3:
+			return v.w();
+		default:
+			return 0.0f;
+		}
+	}
+
 	Renderer::Renderer(Bitmap &render_target)
 		:
 		render_target_(render_target),
@@ -51,8 +68,8 @@ namespace kiwi {
 			return;
 		}
 
-		VertexArray vertices;
-		VertexArray result;
+		Vertices3 vertices;
+		Vertices3 result;
 
 		vertices.push_back(v1);
 		vertices.push_back(v2);
@@ -64,7 +81,7 @@ namespace kiwi {
 
 		if (clip_polygon_axis(vertices, result, x) && clip_polygon_axis(vertices, result, y) && clip_polygon_axis(vertices, result, z))
 		{
-			auto initial_vertex = vertices[0];
+			const auto initial_vertex = vertices[0];
 
 			for (int i = 1; i < vertices.size - 1; i++)
 			{
@@ -85,9 +102,9 @@ namespace kiwi {
 		}
 	}
 
-	bool Renderer::clip_polygon_axis(VertexArray &vertices, VertexArray &result, std::size_t component_index)
+	bool Renderer::clip_polygon_axis(Vertices3 &vertices, Vertices3 &result, std::size_t component_index)
 	{
-		clip_polygon_component(vertices, result, component_index, 1.0f, true);
+		clip_polygon_component(vertices, result, component_index, 1.0f);
 		vertices.clear();
 
 		if (result.empty())
@@ -95,43 +112,27 @@ namespace kiwi {
 			return false;
 		}
 
-		clip_polygon_component(result, vertices, component_index, -1.0f, false);
+		clip_polygon_component(result, vertices, component_index, -1.0f);
 		result.clear();
 
 		return !vertices.empty();
 	}
 
-	void Renderer::clip_polygon_component(VertexArray &vertices, VertexArray &result, std::size_t component_index, float component_factor, bool pos)
+	void Renderer::clip_polygon_component(Vertices3 &vertices, Vertices3 &result, std::size_t component_index, float component_factor)
 	{
-		auto previous_vertex = vertices.back();
-		auto previous_component = previous_vertex[component_index] * component_factor;
-		//auto previous_inside = previous_component <= previous_vertex.w();
-		bool previous_inside = false;
-		if (component_index == 2 && pos)
-			previous_inside = previous_component >= previous_vertex.w();
-		else
-			previous_inside = previous_component <= previous_vertex.w();
+		auto previous_vertex = vertices[vertices.size - 1];
+		auto previous_component = get_position_at(previous_vertex, component_index) * component_factor;
+		auto previous_inside = previous_component <= previous_vertex.w();
 
 		for(auto i = 0; i < vertices.size; i++)
 		{
-			auto current_vertex = vertices[i];
-			auto current_component = current_vertex[component_index] * component_factor;
-
-			bool current_inside = false;
-			if(component_index == 2 && pos)
-				current_inside = current_component >= current_vertex.w();
-			else
-				current_inside = current_component <= current_vertex.w();
+			const auto current_vertex = vertices[i];
+			const auto current_component = get_position_at(current_vertex, component_index) * component_factor;
+			const auto current_inside = current_component <= current_vertex.w();
 
 			if (current_inside != previous_inside)
 			{
-				auto lerp_amount = (previous_vertex.w() - previous_component) /
-					((previous_vertex.w() - previous_component) -
-					(current_vertex.w() - current_component));
-			
-				if (component_index == 2)
-					lerp_amount = -lerp_amount;
-
+				const auto lerp_amount = (previous_vertex.w() - previous_component) / ((previous_vertex.w() - previous_component) - (current_vertex.w() - current_component));
 				result.push_back(previous_vertex.lerp(current_vertex, lerp_amount));
 			}
 
@@ -152,7 +153,7 @@ namespace kiwi {
 		auto mid_y = v2.screen_space_transform(half_width_, half_height_).perspective_divide();
 		auto max_y = v3.screen_space_transform(half_width_, half_height_).perspective_divide();
 
-		// Don't draw triangles not facing the camera
+		// Don't draw triangles that are not facing the camera
 		if (triangle_area_sign(min_y, max_y, mid_y) == TriangleAreaSign::Positive)
 			return;
 
@@ -227,7 +228,7 @@ namespace kiwi {
 
 		for (auto j = min_x; j < max_x; j++)
 		{
-			auto depth_buffer_index = i + j * render_target_.width();
+			auto depth_buffer_index = j + i * render_target_.width();
 
 			// Only draw the pixel if it's closer to the camera than the pixel currently in the depth buffer
 			if (depth < depth_buffer_[depth_buffer_index])

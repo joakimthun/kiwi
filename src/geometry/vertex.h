@@ -19,12 +19,11 @@ namespace kiwi {
 
 		const Vec4 &Vertex::text_coords() const;
 		Vertex transform(const Mat4 &transform) const;
-		float operator[](std::size_t index) const;
 		Vertex lerp(const Vertex &other, float amount) const;
-
 		Vertex perspective_divide() const;
 		Vertex screen_space_transform(float half_width, float half_height) const;
 		bool inside_view_frustum() const;
+
 	private:
 		Vertex(float x, float y, float z, float w, const Vec4 &text_coords);
 

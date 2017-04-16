@@ -47,11 +47,6 @@ namespace kiwi {
 		return position_.w;
 	}
 
-	float Vertex::operator[](std::size_t index) const
-	{
-		return position_[static_cast<int>(index)];
-	}
-
 	const Vec4 & Vertex::text_coords() const
 	{
 		return text_coords_;
@@ -64,9 +59,7 @@ namespace kiwi {
 
 	Vertex Vertex::lerp(const Vertex &other, float amount) const
 	{
-		return Vertex(
-			vec4_lerp(position_, other.position_, amount),
-			vec4_lerp(text_coords_, other.text_coords_, amount));
+		return Vertex(position_.lerp(other.position_, amount), text_coords_.lerp(other.text_coords_, amount));
 	}
 
 	Vertex Vertex::perspective_divide() const

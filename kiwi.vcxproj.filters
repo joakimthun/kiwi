@@ -57,7 +57,7 @@
     <ClCompile Include="src\math\mat4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\containers\vertex_array.cpp">
+    <ClCompile Include="src\containers\vertices3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -104,7 +104,7 @@
     <ClInclude Include="src\math\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\containers\vertex_array.h">
+    <ClInclude Include="src\containers\vertices3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

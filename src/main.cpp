@@ -24,6 +24,7 @@ int main(int argc, char* argv[])
 	Renderer renderer(window.display_buffer());
 
 	const auto mesh = Mesh("assets/monkey0.obj");
+	//const auto mesh = Mesh("assets/Chest.obj");
 
 	auto texture = Bitmap(512, 512);
 	for (auto j = 0; j < texture.height(); j++)
@@ -37,13 +38,9 @@ int main(int argc, char* argv[])
 		}
 	}
 
-
 	const auto projection = Mat4::perspective(degrees_to_radians(70.0f),800.f / 600.f, 0.1f, 1000.0f);
-	const auto translation = Mat4::translation(0.0f, 0.0f, 4.0f);
 
-	float rotation_v = 0.0f;
 	auto rotation_v = 0.0f;
-	auto translation_v = -3.0f;
 	MSG msg = { 0 };
 
 	while (1)
@@ -60,12 +57,11 @@ int main(int argc, char* argv[])
 		renderer.clear(0x00, 0x00, 0x00);
 		renderer.clear_depth_buffer();
 
-		rotation_v += dt * 5.5f;
+		rotation_v += dt * 7.5f;
+
+		const auto translation = Mat4::translation(0.0f, 0.0f, 4.0f - 4 * std::sin(rotation_v));
+		//const auto translation = Mat4::translation(0.0f, -25.0f, 100.0f);
 		const auto rotation = Mat4::rotation(0.0f, rotation_v, 0.0f);
-
-		rotation_v += dt * 3.5f;
-		translation_v += dt * 5.0f;
-
 		const auto transform = projection * translation * rotation;
 
 		renderer.draw_mesh(mesh, transform, texture);

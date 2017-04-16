@@ -6,10 +6,10 @@
 
 namespace kiwi {
 
-	class VertexArray
+	class Vertices3
 	{
 	public:
-		VertexArray();
+		Vertices3();
 		const std::size_t size;
 		void push_back(const Vertex &vertex);
 		void clear();
@@ -19,7 +19,7 @@ namespace kiwi {
 
 	private:
 		std::size_t current_index_;
-		std::array<Vertex, 3> vertices_;
+		std::array<Vertex, 4> vertices_;
 	};
 
 }
