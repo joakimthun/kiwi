@@ -1,10 +1,10 @@
-#include "window.h"
+#include "win32_window.h"
 
-#include "kiwi_exception.h"
+#include "../kiwi_exception.h"
 
 namespace kiwi {
 
-	Window::Window(int32_t width, int32_t height)
+	Win32Window::Win32Window(int32_t width, int32_t height)
 		:
 		width_(width),
 		height_(height),
@@ -74,25 +74,25 @@ namespace kiwi {
 		bitmap_info_.biCompression = BI_RGB;
 	}
 
-	void Window::open()
+	void Win32Window::open()
 	{
 		ShowWindow(hwnd_, SW_SHOW);
 		UpdateWindow(hwnd_);
 	}
 
-	void Window::update()
+	void Win32Window::update()
 	{
 		RedrawWindow(hwnd_, NULL, NULL, RDW_INVALIDATE);
 	}
 
-	Bitmap &Window::display_buffer()
+	Bitmap &Win32Window::display_buffer()
 	{
 		return display_buffer_;
 	}
 
-	LRESULT  Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+	LRESULT  Win32Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
-		auto window = (Window*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+		auto window = (Win32Window*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
 		switch (message)
 		{

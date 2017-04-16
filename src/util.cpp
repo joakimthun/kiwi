@@ -59,4 +59,9 @@ namespace kiwi {
 
 		return elems;
 	}
+
+	std::unique_ptr<Window> create_window(int32_t width, int32_t height)
+	{
+		return std::make_unique<Win32Window>(width, height);
+	}
 }

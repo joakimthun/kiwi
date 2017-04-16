@@ -151,11 +151,11 @@
     <ClCompile Include="src\geometry\mesh.cpp" />
     <ClCompile Include="src\models\indexed_model.cpp" />
     <ClCompile Include="src\models\obj_model.cpp" />
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\kiwi.cpp" />
     <ClCompile Include="src\rendering\renderer.cpp" />
     <ClCompile Include="src\util.cpp" />
     <ClCompile Include="src\geometry\vertex.cpp" />
-    <ClCompile Include="src\window.cpp" />
+    <ClCompile Include="src\win32\win32_window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\mat4.h" />
@@ -172,6 +172,7 @@
     <ClInclude Include="src\rendering\renderer.h" />
     <ClInclude Include="src\util.h" />
     <ClInclude Include="src\geometry\vertex.h" />
+    <ClInclude Include="src\win32\win32_window.h" />
     <ClInclude Include="src\window.h" />
   </ItemGroup>
   <ItemGroup>

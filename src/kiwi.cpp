@@ -18,10 +18,10 @@ const float dt = 0.0016f;
 
 int main(int argc, char* argv[])
 {
-	Window window(800, 600);
-	window.open();
+	auto window = create_window(800, 600);
+	window->open();
 
-	Renderer renderer(window.display_buffer());
+	auto renderer = Renderer(window->display_buffer());
 
 	const auto mesh = Mesh("assets/monkey0.obj");
 	//const auto mesh = Mesh("assets/Chest.obj");
@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
 
 		renderer.draw_mesh(mesh, transform, texture);
 
-		window.update();
+		window->update();
 	}
 
 	return 0;
