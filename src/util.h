@@ -7,7 +7,7 @@
 #include <memory>
 
 #include "geometry/vertex.h"
-#include "win32/win32_window.h"
+#include "window.h"
 
 namespace kiwi {
 	

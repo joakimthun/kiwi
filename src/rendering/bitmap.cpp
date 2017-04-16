@@ -7,7 +7,8 @@ namespace kiwi {
 	Bitmap::Bitmap(int32_t width, int32_t height)
 		:
 		width_(width),
-		height_(height)
+		height_(height),
+		stride_(3)
 	{
 		data_size_ = width * height * 3;
 		data_ = (uint8_t*)calloc(data_size_, 1);
@@ -42,9 +43,14 @@ namespace kiwi {
 		return data_size_;
 	}
 
+	uint8_t Bitmap::stride() const
+	{
+		return stride_;
+	}
+
 	void Bitmap::clear(uint8_t r, uint8_t g, uint8_t b)
 	{
-		for (auto i = 0; i < data_size_; i += 3)
+		for (auto i = 0; i < data_size_; i += stride_)
 		{
 			data_[i] = b;
 			data_[i + 1] = g;
@@ -54,7 +60,7 @@ namespace kiwi {
 
 	void Bitmap::put_pixel(int32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b)
 	{
-		int index = (x + y * width_) * 3;
+		int index = (x + y * width_) * stride_;
 		data_[index] = b;
 		data_[index + 1] = g;
 		data_[index + 2] = r;
@@ -62,8 +68,8 @@ namespace kiwi {
 
 	void Bitmap::copy_pixel(int32_t dest_x, uint32_t dest_y, int32_t src_x, uint32_t src_y, const Bitmap& src)
 	{
-		const auto dest_index = (dest_x + dest_y * width_) * 3;
-		const auto src_index = (src_x + src_y * src.width_) * 3;
+		const auto dest_index = (dest_x + dest_y * width_) * stride_;
+		const auto src_index = (src_x + src_y * src.width_) * stride_;
 
 		data_[dest_index] = src.get_component(src_index);
 		data_[dest_index + 1] = src.get_component(src_index + 1);

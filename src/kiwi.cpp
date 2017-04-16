@@ -1,3 +1,4 @@
+#include <SDL.h>
 #include <iostream>
 
 #include "util.h"
@@ -18,6 +19,8 @@ const float dt = 0.0016f;
 
 int main(int argc, char* argv[])
 {
+	SDL_Window* w = nullptr;
+
 	auto window = create_window(800, 600);
 	window->open();
 
@@ -41,18 +44,18 @@ int main(int argc, char* argv[])
 	const auto projection = Mat4::perspective(degrees_to_radians(70.0f),800.f / 600.f, 0.1f, 1000.0f);
 
 	auto rotation_v = 0.0f;
-	MSG msg = { 0 };
 
-	while (1)
+	auto running = true;
+	while (running)
 	{
-		while(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+		SDL_Event e;
+		while (SDL_PollEvent(&e) != 0)
 		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+			if (e.type == SDL_QUIT || e.key.keysym.sym == SDLK_ESCAPE)
+			{
+				running = false;
+			}
 		}
-
-		if (msg.message == WM_QUIT)
-			break;
 
 		renderer.clear(0x00, 0x00, 0x00);
 		renderer.clear_depth_buffer();

@@ -5,6 +5,9 @@
 #include <iterator>
 #include <algorithm>
 
+#include "win32/win32_window.h"
+#include "sdl_window.h"
+
 namespace kiwi {
 
 	float f_rand()
@@ -62,6 +65,10 @@ namespace kiwi {
 
 	std::unique_ptr<Window> create_window(int32_t width, int32_t height)
 	{
+#if 0
 		return std::make_unique<Win32Window>(width, height);
+#endif
+		return std::make_unique<SDLWindow>(width, height);
+		
 	}
 }

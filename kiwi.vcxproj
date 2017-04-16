@@ -75,12 +75,16 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)lib\sdl\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)lib\sdl\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)lib\sdl\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)lib\sdl\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -105,6 +109,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -138,6 +143,7 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -153,6 +159,7 @@
     <ClCompile Include="src\models\obj_model.cpp" />
     <ClCompile Include="src\kiwi.cpp" />
     <ClCompile Include="src\rendering\renderer.cpp" />
+    <ClCompile Include="src\sdl_window.cpp" />
     <ClCompile Include="src\util.cpp" />
     <ClCompile Include="src\geometry\vertex.cpp" />
     <ClCompile Include="src\win32\win32_window.cpp" />
@@ -170,6 +177,7 @@
     <ClInclude Include="src\models\indexed_model.h" />
     <ClInclude Include="src\models\obj_model.h" />
     <ClInclude Include="src\rendering\renderer.h" />
+    <ClInclude Include="src\sdl_window.h" />
     <ClInclude Include="src\util.h" />
     <ClInclude Include="src\geometry\vertex.h" />
     <ClInclude Include="src\win32\win32_window.h" />
