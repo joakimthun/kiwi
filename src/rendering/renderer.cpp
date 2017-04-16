@@ -44,6 +44,110 @@ namespace kiwi {
 
 	void Renderer::draw_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3, const Bitmap &texture)
 	{
+		// If the triangle is completely inside the view frustum there is no need for clipping
+		if (v1.inside_view_frustum() && v2.inside_view_frustum() && v3.inside_view_frustum())
+		{
+			fill_triangle(v1, v2, v3, texture);
+			return;
+		}
+
+		VertexArray vertices;
+		VertexArray result;
+
+		vertices.push_back(v1);
+		vertices.push_back(v2);
+		vertices.push_back(v3);
+
+		const std::size_t x = 0;
+		const std::size_t y = 1;
+		const std::size_t z = 2;
+
+		if (clip_polygon_axis(vertices, result, x) && clip_polygon_axis(vertices, result, y) && clip_polygon_axis(vertices, result, z))
+		{
+			auto initial_vertex = vertices[0];
+
+			for (int i = 1; i < vertices.size - 1; i++)
+			{
+				fill_triangle(initial_vertex, vertices[i], vertices[i + 1], texture);
+			}
+		}
+	}
+
+	void Renderer::draw_mesh(const Mesh & mesh, const Mat4 &transform, const Bitmap & texture)
+	{
+		for (auto i = 0; i < mesh.num_indices(); i += 3)
+		{
+			draw_triangle(
+				mesh.get_vertex(mesh.get_index(i)).transform(transform),
+				mesh.get_vertex(mesh.get_index(i + 1)).transform(transform),
+				mesh.get_vertex(mesh.get_index(i + 2)).transform(transform),
+				texture);
+		}
+	}
+
+	bool Renderer::clip_polygon_axis(VertexArray &vertices, VertexArray &result, std::size_t component_index)
+	{
+		clip_polygon_component(vertices, result, component_index, 1.0f, true);
+		vertices.clear();
+
+		if (result.empty())
+		{
+			return false;
+		}
+
+		clip_polygon_component(result, vertices, component_index, -1.0f, false);
+		result.clear();
+
+		return !vertices.empty();
+	}
+
+	void Renderer::clip_polygon_component(VertexArray &vertices, VertexArray &result, std::size_t component_index, float component_factor, bool pos)
+	{
+		auto previous_vertex = vertices.back();
+		auto previous_component = previous_vertex[component_index] * component_factor;
+		//auto previous_inside = previous_component <= previous_vertex.w();
+		bool previous_inside = false;
+		if (component_index == 2 && pos)
+			previous_inside = previous_component >= previous_vertex.w();
+		else
+			previous_inside = previous_component <= previous_vertex.w();
+
+		for(auto i = 0; i < vertices.size; i++)
+		{
+			auto current_vertex = vertices[i];
+			auto current_component = current_vertex[component_index] * component_factor;
+
+			bool current_inside = false;
+			if(component_index == 2 && pos)
+				current_inside = current_component >= current_vertex.w();
+			else
+				current_inside = current_component <= current_vertex.w();
+
+			if (current_inside != previous_inside)
+			{
+				auto lerp_amount = (previous_vertex.w() - previous_component) /
+					((previous_vertex.w() - previous_component) -
+					(current_vertex.w() - current_component));
+			
+				if (component_index == 2)
+					lerp_amount = -lerp_amount;
+
+				result.push_back(previous_vertex.lerp(current_vertex, lerp_amount));
+			}
+
+			if (current_inside)
+			{
+				result.push_back(current_vertex);
+			}
+
+			previous_vertex = current_vertex;
+			previous_component = current_component;
+			previous_inside = current_inside;
+		}
+	}
+
+	void Renderer::fill_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3, const Bitmap &texture)
+	{
 		auto min_y = v1.screen_space_transform(half_width_, half_height_).perspective_divide();
 		auto mid_y = v2.screen_space_transform(half_width_, half_height_).perspective_divide();
 		auto max_y = v3.screen_space_transform(half_width_, half_height_).perspective_divide();
@@ -68,18 +172,6 @@ namespace kiwi {
 		const auto area_sign = triangle_area_sign(min_y, max_y, mid_y);
 
 		scan_triangle(min_y, mid_y, max_y, area_sign == TriangleAreaSign::Positive, texture);
-	}
-
-	void Renderer::draw_mesh(const Mesh & mesh, const Mat4 &transform, const Bitmap & texture)
-	{
-		for (auto i = 0; i < mesh.num_indices(); i += 3)
-		{
-			draw_triangle(
-				mesh.get_vertex(mesh.get_index(i)).transform(transform),
-				mesh.get_vertex(mesh.get_index(i + 1)).transform(transform),
-				mesh.get_vertex(mesh.get_index(i + 2)).transform(transform),
-				texture);
-		}
 	}
 
 	void Renderer::scan_triangle(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, bool handedness, const Bitmap &texture)

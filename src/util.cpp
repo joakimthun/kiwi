@@ -25,7 +25,7 @@ namespace kiwi {
 		// Positive cross product?
 		return (x1 * y2 - x2 * y1) >= 0 ? TriangleAreaSign::Positive : TriangleAreaSign::Negative;
 	}
-
+	
 	// http://stackoverflow.com/questions/236129/split-a-string-in-c++
 	template<typename Out>
 	void str_split(const std::string &s, char delim, Out result) {

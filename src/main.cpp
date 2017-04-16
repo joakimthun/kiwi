@@ -37,19 +37,15 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	Vertex minYVert = Vertex(Vec4(-1, -1, 0, 1),
-		Vec4(0.0f, 0.0f, 0.0f, 0.0f));
-	Vertex midYVert = Vertex(Vec4(0, 1, 0, 1),
-		Vec4(0.5f, 1.0f, 0.0f, 0.0f));
-	Vertex maxYVert = Vertex(Vec4(1, -1, 0, 1),
-		Vec4(1.0f, 0.0f, 0.0f, 0.0f));
 
 	const auto projection = Mat4::perspective(degrees_to_radians(70.0f),800.f / 600.f, 0.1f, 1000.0f);
 	const auto translation = Mat4::translation(0.0f, 0.0f, 4.0f);
 
 	float rotation_v = 0.0f;
-
+	auto rotation_v = 0.0f;
+	auto translation_v = -3.0f;
 	MSG msg = { 0 };
+
 	while (1)
 	{
 		while(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
@@ -66,6 +62,10 @@ int main(int argc, char* argv[])
 
 		rotation_v += dt * 5.5f;
 		const auto rotation = Mat4::rotation(0.0f, rotation_v, 0.0f);
+
+		rotation_v += dt * 3.5f;
+		translation_v += dt * 5.0f;
+
 		const auto transform = projection * translation * rotation;
 
 		renderer.draw_mesh(mesh, transform, texture);

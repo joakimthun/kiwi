@@ -2,8 +2,10 @@
 
 #include <stdint.h>
 #include <vector>
+#include <array>
 
 #include "../math/mat4.h"
+#include "../containers/vertex_array.h"
 #include "../geometry/vertex.h"
 #include "edge.h"
 #include "bitmap.h"
@@ -21,7 +23,11 @@ namespace kiwi {
 		void clear_depth_buffer();
 		void draw_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3, const Bitmap &texture);
 		void draw_mesh(const Mesh &mesh, const Mat4 &transform, const Bitmap &texture);
+		
 	private:
+		bool clip_polygon_axis(VertexArray &vertices, VertexArray &result, std::size_t component_index);
+		void clip_polygon_component(VertexArray &vertices, VertexArray &result, std::size_t component_index, float component_factor, bool pos);
+		void fill_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3, const Bitmap &texture);
 		void scan_triangle(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, bool handedness, const Bitmap &texture);
 		void scan_edges(Edge &a, Edge &b, bool handedness, const Bitmap &texture);
 		void draw_scan_line(const Edge &left, const Edge &right, int32_t i, const Bitmap &texture);
