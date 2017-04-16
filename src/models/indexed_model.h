@@ -2,28 +2,29 @@
 
 #include <stdint.h>
 #include <vector>
-#include "glm/vec4.hpp"
+
+#include "../math/vec4.h"
 
 namespace kiwi {
 
 	class IndexedModel
 	{
 	public:
-		std::vector<glm::vec4> &positions();
-		std::vector<glm::vec4> &tex_coords();
-		std::vector<glm::vec4> &normals();
+		std::vector<Vec4> &positions();
+		std::vector<Vec4> &tex_coords();
+		std::vector<Vec4> &normals();
 		std::vector<std::size_t> &indices();
-		std::vector<glm::vec4> &tangents();
+		std::vector<Vec4> &tangents();
 
 		void calc_normals();
 		void calc_tangents();
 
 	private:
-		std::vector<glm::vec4> positions_;
-		std::vector<glm::vec4> tex_coords_;
-		std::vector<glm::vec4> normals_;
+		std::vector<Vec4> positions_;
+		std::vector<Vec4> tex_coords_;
+		std::vector<Vec4> normals_;
 		std::vector<std::size_t> indices_;
-		std::vector<glm::vec4> tangents_;
+		std::vector<Vec4> tangents_;
 	};
 
 }

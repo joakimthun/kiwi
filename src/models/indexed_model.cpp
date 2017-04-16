@@ -1,22 +1,20 @@
 #include "indexed_model.h"
 
-#include "glm/glm.hpp"
-
 #include "../util.h"
 
 namespace kiwi {
 
-	std::vector<glm::vec4> &IndexedModel::positions()
+	std::vector<Vec4> &IndexedModel::positions()
 	{
 		return positions_;
 	}
 
-	std::vector<glm::vec4> &IndexedModel::tex_coords()
+	std::vector<Vec4> &IndexedModel::tex_coords()
 	{
 		return tex_coords_;
 	}
 
-	std::vector<glm::vec4> &IndexedModel::normals()
+	std::vector<Vec4> &IndexedModel::normals()
 	{
 		return normals_;
 	}
@@ -26,7 +24,7 @@ namespace kiwi {
 		return indices_;
 	}
 
-	std::vector<glm::vec4> &IndexedModel::tangents()
+	std::vector<Vec4> &IndexedModel::tangents()
 	{
 		return tangents_;
 	}
@@ -42,15 +40,15 @@ namespace kiwi {
 			const auto v1 = positions_[i1] - positions_[i0];
 			const auto v2 = positions_[i2] - positions_[i0];
 
-			const auto normal = glm::normalize(vec4_cross(v1, v2));
+			const auto normal = v1.cross(v2).normalize();
 
-			normals_[i0] = normals_[i0] += normal;
-			normals_[i1] = normals_[i1] += normal;
-			normals_[i2] = normals_[i2] += normal;
+			normals_[i0] = normals_[i0] + normal;
+			normals_[i1] = normals_[i1] + normal;
+			normals_[i2] = normals_[i2] + normal;
 		}
 
 		for (auto i = 0; i < normals_.size(); i++)
-			normals_[i] = glm::normalize(normals_[i]);
+			normals_[i] = normals_[i].normalize();
 	}
 
 	void IndexedModel::calc_tangents()
@@ -72,19 +70,19 @@ namespace kiwi {
 			const auto dividend = (delta_u1 * delta_v2 - delta_u2 * delta_v1);
 			const auto f = dividend == 0 ? 0.0f : 1.0f / dividend;
 
-			const auto tangent = glm::vec4(
+			const auto tangent = Vec4(
 				f * (delta_v2 * edge_1.x - delta_v1 * edge_2.x),
 				f * (delta_v2 * edge_1.y - delta_v1 * edge_2.y),
 				f * (delta_v2 * edge_1.z - delta_v1 * edge_2.z),
 				0);
 
-			tangents_[i0] = tangents_[i0] += tangent;
-			tangents_[i1] = tangents_[i1] += tangent;
-			tangents_[i2] = tangents_[i2] += tangent;
+			tangents_[i0] = tangents_[i0] + tangent;
+			tangents_[i1] = tangents_[i1] + tangent;
+			tangents_[i2] = tangents_[i2] + tangent;
 		}
 
 		for (auto i = 0; i < tangents_.size(); i++)
-			tangents_[i] = glm::normalize(tangents_[i]);
+			tangents_[i] = tangents_[i].normalize();
 	}
 
 }

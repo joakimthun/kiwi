@@ -56,8 +56,8 @@ namespace kiwi {
 			const auto& current_index = indices_[i];
 
 			auto current_position = positions_[current_index.vertex];
-			glm::vec4 current_tex_coord(0, 0, 0, 0);
-			glm::vec4 current_normal(0, 0, 0, 0);
+			Vec4 current_tex_coord(0, 0, 0, 0);
+			Vec4 current_normal(0, 0, 0, 0);
 
 			if (has_tex_coords_)
 				current_tex_coord = tex_coords_[current_index.text_coord];
@@ -88,7 +88,7 @@ namespace kiwi {
 				normal_model.positions().push_back(current_position);
 				normal_model.tex_coords().push_back(current_tex_coord);
 				normal_model.normals().push_back(current_normal);
-				normal_model.tangents().push_back(glm::vec4(0, 0, 0, 0));
+				normal_model.tangents().push_back(Vec4(0, 0, 0, 0));
 			}
 
 			result->indices().push_back(model_vertex_index);
@@ -134,15 +134,15 @@ namespace kiwi {
 
 			else if (tokens[0] == "v")
 			{
-				positions_.push_back(glm::vec4(std::stof(tokens[1], &sz), std::stof(tokens[2], &sz), std::stof(tokens[3], &sz), 1));
+				positions_.push_back(Vec4(std::stof(tokens[1], &sz), std::stof(tokens[2], &sz), std::stof(tokens[3], &sz), 1));
 			}
 			else if (tokens[0] == "vt")
 			{
-				tex_coords_.push_back(glm::vec4(std::stof(tokens[1], &sz), 1.0f - std::stof(tokens[2], &sz), 0, 0));
+				tex_coords_.push_back(Vec4(std::stof(tokens[1], &sz), 1.0f - std::stof(tokens[2], &sz), 0, 0));
 			}
 			else if (tokens[0] == "vn")
 			{
-				normals_.push_back(glm::vec4(std::stof(tokens[1], &sz), std::stof(tokens[2], &sz), std::stof(tokens[3], &sz), 0));
+				normals_.push_back(Vec4(std::stof(tokens[1], &sz), std::stof(tokens[2], &sz), std::stof(tokens[3], &sz), 0));
 			}
 			else if (tokens[0] == "f")
 			{

@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "glm/vec4.hpp"
 
 #include "indexed_model.h"
+#include "../math/vec4.h"
 
 namespace kiwi {
 
@@ -35,9 +35,9 @@ namespace kiwi {
 		void load(const std::string &filename);
 		OBJIndex parse_obj_index(const std::string &token);
 
-		std::vector<glm::vec4> positions_;
-		std::vector<glm::vec4> tex_coords_;
-		std::vector<glm::vec4> normals_;
+		std::vector<Vec4> positions_;
+		std::vector<Vec4> tex_coords_;
+		std::vector<Vec4> normals_;
 		std::vector<OBJIndex> indices_;
 		bool has_tex_coords_;
 		bool has_normals_;

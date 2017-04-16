@@ -3,9 +3,8 @@
 #include <utility>
 #include <math.h>
 #include <float.h>
-#include "glm/vec4.hpp"
-#include "glm/mat4x4.hpp"
 
+#include "../math/vec4.h"
 #include "../window.h"
 #include "../util.h"
 
@@ -71,7 +70,7 @@ namespace kiwi {
 		scan_triangle(min_y, mid_y, max_y, area_sign == TriangleAreaSign::Positive, texture);
 	}
 
-	void Renderer::draw_mesh(const Mesh & mesh, const glm::mat4 &transform, const Bitmap & texture)
+	void Renderer::draw_mesh(const Mesh & mesh, const Mat4 &transform, const Bitmap & texture)
 	{
 		for (auto i = 0; i < mesh.num_indices(); i += 3)
 		{

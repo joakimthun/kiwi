@@ -4,7 +4,6 @@
 #include <sstream>
 #include <iterator>
 #include <algorithm>
-#include "glm/glm.hpp"
 
 namespace kiwi {
 
@@ -25,14 +24,6 @@ namespace kiwi {
 
 		// Positive cross product?
 		return (x1 * y2 - x2 * y1) >= 0 ? TriangleAreaSign::Positive : TriangleAreaSign::Negative;
-	}
-
-	glm::vec4 vec4_cross(const glm::vec4 &v1, const glm::vec4 &v2)
-	{
-		const auto v31 = glm::vec3(v1[0], v1[1], v1[2]);
-		const auto v32 = glm::vec3(v2[0], v2[1], v2[2]);
-		const auto result = glm::cross(v31, v32);
-		return glm::vec4(result[0], result[1], result[2], 1);
 	}
 
 	// http://stackoverflow.com/questions/236129/split-a-string-in-c++

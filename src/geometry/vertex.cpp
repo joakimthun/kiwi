@@ -2,7 +2,7 @@
 
 namespace kiwi {
 
-	Vertex::Vertex(const glm::vec4& position, const glm::vec4 &text_coords)
+	Vertex::Vertex(const Vec4 &position, const Vec4 &text_coords)
 		:
 		position_(position),
 		text_coords_(text_coords)
@@ -11,7 +11,7 @@ namespace kiwi {
 
 	Vertex::Vertex(float x, float y, float z, float w, float r, float g, float b, float a)
 		:
-		position_(glm::vec4(x, y, z, w)),
+		position_(Vec4(x, y, z, w)),
 		text_coords_(r, g, b, a)
 	{
 	}
@@ -36,12 +36,12 @@ namespace kiwi {
 		return position_.w;
 	}
 
-	const glm::vec4 & Vertex::text_coords() const
+	const Vec4 & Vertex::text_coords() const
 	{
 		return text_coords_;
 	}
 
-	Vertex Vertex::transform(const glm::mat4 &transform) const
+	Vertex Vertex::transform(const Mat4 &transform) const
 	{
 		return Vertex(transform * position_, text_coords_);
 	}
@@ -66,9 +66,9 @@ namespace kiwi {
 			text_coords_);
 	}
 
-	Vertex::Vertex(float x, float y, float z, float w, const glm::vec4 &text_coords)
+	Vertex::Vertex(float x, float y, float z, float w, const Vec4 &text_coords)
 		:
-		position_(glm::vec4(x, y, z, w)),
+		position_(Vec4(x, y, z, w)),
 		text_coords_(text_coords)
 	{
 	}
