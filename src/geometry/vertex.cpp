@@ -6,10 +6,11 @@
 
 namespace kiwi {
 
-	Vertex::Vertex(const Vec4 &position, const Vec4 &text_coords)
+	Vertex::Vertex(const Vec4 &position, const Vec4 &text_coords,const Vec4 &normal)
 		:
 		position_(position),
-		text_coords_(text_coords)
+		text_coords_(text_coords),
+		normal_(normal)
 	{
 	}
 
@@ -47,19 +48,27 @@ namespace kiwi {
 		return position_.w;
 	}
 
-	const Vec4 & Vertex::text_coords() const
+	const Vec4 &Vertex::text_coords() const
 	{
 		return text_coords_;
 	}
 
-	Vertex Vertex::transform(const Mat4 &transform) const
+	const Vec4 &Vertex::normal() const
 	{
-		return Vertex(transform * position_, text_coords_);
+		return normal_;
+	}
+
+	Vertex Vertex::transform(const Mat4 &transform, const Mat4 &normal_transform) const
+	{
+		return Vertex(transform * position_, text_coords_, (normal_transform * normal_).normalize());
 	}
 
 	Vertex Vertex::lerp(const Vertex &other, float amount) const
 	{
-		return Vertex(position_.lerp(other.position_, amount), text_coords_.lerp(other.text_coords_, amount));
+		return Vertex(
+			position_.lerp(other.position_, amount), 
+			text_coords_.lerp(other.text_coords_, amount),
+			normal_.lerp(other.normal_, amount));
 	}
 
 	Vertex Vertex::perspective_divide() const
@@ -69,7 +78,8 @@ namespace kiwi {
 			position_.y / position_.w,
 			position_.z / position_.w,
 			position_.w,
-			text_coords_);
+			text_coords_,
+			normal_);
 	}
 
 	Vertex Vertex::screen_space_transform(float half_width, float half_height) const
@@ -79,7 +89,8 @@ namespace kiwi {
 			-half_height * y() + (half_height -0.5f) * w(),
 			z(), 
 			w(),
-			text_coords_);
+			text_coords_,
+			normal_);
 	}
 
 	bool Vertex::inside_view_frustum() const
@@ -89,10 +100,11 @@ namespace kiwi {
 			std::abs(position_.z) <= std::abs(position_.w);
 	}
 
-	Vertex::Vertex(float x, float y, float z, float w, const Vec4 &text_coords)
+	Vertex::Vertex(float x, float y, float z, float w, const Vec4 &text_coords, const Vec4 &normal)
 		:
 		position_(Vec4(x, y, z, w)),
-		text_coords_(text_coords)
+		text_coords_(text_coords),
+		normal_(normal)
 	{
 	}
 

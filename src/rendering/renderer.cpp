@@ -90,14 +90,15 @@ namespace kiwi {
 		}
 	}
 
-	void Renderer::draw_mesh(const Mesh & mesh, const Mat4 &transform, const Bitmap & texture)
+	void Renderer::draw_mesh(const Mesh & mesh, const Mat4 &view_projection, const Mat4 &transform, const Bitmap & texture)
 	{
+		const auto mvp = view_projection * transform;
 		for (auto i = 0; i < mesh.num_indices(); i += 3)
 		{
 			draw_triangle(
-				mesh.get_vertex(mesh.get_index(i)).transform(transform),
-				mesh.get_vertex(mesh.get_index(i + 1)).transform(transform),
-				mesh.get_vertex(mesh.get_index(i + 2)).transform(transform),
+				mesh.get_vertex(mesh.get_index(i)).transform(mvp, transform),
+				mesh.get_vertex(mesh.get_index(i + 1)).transform(mvp, transform),
+				mesh.get_vertex(mesh.get_index(i + 2)).transform(mvp, transform),
 				texture);
 		}
 	}
@@ -183,11 +184,11 @@ namespace kiwi {
 		auto top_to_middle = Edge(gradients, min_y, mid_y, 0);
 		auto middle_to_bottom = Edge(gradients, mid_y, max_y, 1);
 
-		scan_edges(top_to_bottom, top_to_middle, handedness, texture);
-		scan_edges(top_to_bottom, middle_to_bottom, handedness, texture);
+		scan_edges(gradients, top_to_bottom, top_to_middle, handedness, texture);
+		scan_edges(gradients, top_to_bottom, middle_to_bottom, handedness, texture);
 	}
 
-	void Renderer::scan_edges(Edge &a, Edge &b, bool handedness, const Bitmap &texture)
+	void Renderer::scan_edges(const Gradients &gradients, Edge &a, Edge &b, bool handedness, const Bitmap &texture)
 	{
 		auto *left = &a;
 		auto *right = &b;
@@ -202,13 +203,13 @@ namespace kiwi {
 
 		for (auto i = y_start; i < y_end; i++)
 		{
-			draw_scan_line(*left, *right, i, texture);
+			draw_scan_line(gradients, *left, *right, i, texture);
 			left->step();
 			right->step();
 		}
 	}
 
-	void Renderer::draw_scan_line(const Edge &left, const Edge &right, int32_t i, const Bitmap &texture)
+	void Renderer::draw_scan_line(const Gradients &gradients, const Edge &left, const Edge &right, int32_t i, const Bitmap &texture)
 	{
 		const auto min_x = static_cast<int32_t>(ceil(left.x()));
 		const auto max_x = static_cast<int32_t>(ceil(right.x()));
@@ -216,15 +217,17 @@ namespace kiwi {
 
 		const auto x_dist = right.x() - left.x();
 
-		const auto tex_coord_xx_step = (right.text_coord_x() - left.text_coord_x()) / x_dist;
-		const auto tex_coord_yx_step = (right.text_coord_y() - left.text_coord_y()) / x_dist;
-		const auto one_over_zx_step = (right.one_over_z() - left.one_over_z()) / x_dist;
-		const auto depth_x_step = (right.depth() - left.depth()) / x_dist;
+		const auto tex_coord_xx_step = gradients.text_coord_xx_step();
+		const auto tex_coord_yx_step = gradients.text_coord_yx_step();
+		const auto one_over_zx_step = gradients.one_over_zx_step();
+		const auto depth_x_step = gradients.depth_x_step();
+		const auto light_x_step = gradients.light_x_step();
 
 		auto tex_coord_x = left.text_coord_x() + tex_coord_xx_step * x_prestep;
 		auto tex_coord_y = left.text_coord_y() + tex_coord_yx_step * x_prestep;
 		auto one_over_z = left.one_over_z() + one_over_zx_step * x_prestep;
 		auto depth = left.depth() + depth_x_step * x_prestep;
+		auto light = left.light() + light_x_step * x_prestep;
 
 		for (auto j = min_x; j < max_x; j++)
 		{
@@ -239,13 +242,14 @@ namespace kiwi {
 				const auto src_x = static_cast<int32_t>(((tex_coord_x * z) * (float)(texture.width() - 1) + 0.5f));
 				const auto src_y = static_cast<int32_t>(((tex_coord_y * z) * (float)(texture.height() - 1) + 0.5f));
 
-				render_target_.copy_pixel(j, i, src_x, src_y, texture);
+				render_target_.copy_pixel(j, i, src_x, src_y, texture, light);
 			}
 
 			one_over_z += one_over_zx_step;
 			tex_coord_x += tex_coord_xx_step;
 			tex_coord_y += tex_coord_yx_step;
 			depth += depth_x_step;
+			light += light_x_step;
 		}
 	}
 }

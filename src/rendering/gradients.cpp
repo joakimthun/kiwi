@@ -1,5 +1,8 @@
 #include "gradients.h"
 
+#include "../util.h"
+#include "../math/vec4.h"
+
 namespace kiwi {
 
 	Gradients::Gradients(const Vertex &min_y, const Vertex &mid_y, const Vertex& max_y)
@@ -29,6 +32,11 @@ namespace kiwi {
 		depth_[1] = mid_y.z();
 		depth_[2] = max_y.z();
 
+		const auto light_dir = Vec4(0.0f, 0.0f, -1.0f);
+		light_[0] = clamp(min_y.normal().dot(light_dir), 0.0f, 1.0f) * 0.9f + 0.2f;
+		light_[1] = clamp(mid_y.normal().dot(light_dir), 0.0f, 1.0f) * 0.9f + 0.2f;
+		light_[2] = clamp(max_y.normal().dot(light_dir), 0.0f, 1.0f) * 0.9f + 0.2f;
+
 		text_coord_xx_step_ = calc_x_step(text_coords_x_, min_y, mid_y, max_y, one_over_dx);
 		text_coord_xy_step_ = calc_y_step(text_coords_x_, min_y, mid_y, max_y, one_over_dy);
 		text_coord_yx_step_ = calc_x_step(text_coords_y_, min_y, mid_y, max_y, one_over_dx);
@@ -39,6 +47,9 @@ namespace kiwi {
 
 		depth_x_step_ = calc_x_step(depth_, min_y, mid_y, max_y, one_over_dx);
 		depth_y_step_ = calc_y_step(depth_, min_y, mid_y, max_y, one_over_dy);
+
+		light_x_step_ = calc_x_step(light_, min_y, mid_y, max_y, one_over_dx);
+		light_y_step_ = calc_y_step(light_, min_y, mid_y, max_y, one_over_dy);
 	}
 
 	float Gradients::get_text_coord_x(std::size_t index) const
@@ -54,6 +65,11 @@ namespace kiwi {
 	float Gradients::get_depth(std::size_t index) const
 	{
 		return depth_[index];
+	}
+
+	float Gradients::get_light(std::size_t index) const
+	{
+		return light_[index];
 	}
 
 	float Gradients::get_one_over_z(std::size_t index) const
@@ -99,6 +115,16 @@ namespace kiwi {
 	float Gradients::depth_y_step() const
 	{
 		return depth_y_step_;
+	}
+
+	float Gradients::light_x_step() const
+	{
+		return light_x_step_;
+	}
+
+	float Gradients::light_y_step() const
+	{
+		return light_y_step_;
 	}
 
 	float Gradients::calc_x_step(const std::array<float, 3> values, const Vertex & min_y, const Vertex & mid_y, const Vertex & max_y, float one_over_dx)

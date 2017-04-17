@@ -28,6 +28,18 @@ namespace kiwi {
 		return m;
 	}
 
+	Mat4 Mat4::scale(float x, float y, float z)
+	{
+		auto m = Mat4();
+
+		m.values[0][0] = x;	m.values[0][1] = 0;	m.values[0][2] = 0;	m.values[0][3] = 0;
+		m.values[1][0] = 0;	m.values[1][1] = y;	m.values[1][2] = 0;	m.values[1][3] = 0;
+		m.values[2][0] = 0;	m.values[2][1] = 0;	m.values[2][2] = z;	m.values[2][3] = 0;
+		m.values[3][0] = 0;	m.values[3][1] = 0;	m.values[3][2] = 0;	m.values[3][3] = 1;
+
+		return m;
+	}
+
 	Mat4 Mat4::perspective(float fov, float aspect_ratio, float near_plane, float far_plane)
 	{
 		auto m = Mat4();
@@ -70,6 +82,18 @@ namespace kiwi {
 		ry.values[3][0] = 0;			ry.values[3][1] = 0;			ry.values[3][2] = 0;			ry.values[3][3] = 1;
 
 		return  rz * (ry * rx);
+	}
+
+	Mat4 Mat4::rotation(const Vec4 &forward, const Vec4 &up, const Vec4 &right)
+	{
+		auto m = Mat4();
+
+		m.values[0][0] = right.x;	m.values[0][1] = right.y;	m.values[0][2] = right.z;	m.values[0][3] = 0;
+		m.values[1][0] = up.x;		m.values[1][1] = up.y;		m.values[1][2] = up.z;		m.values[1][3] = 0;
+		m.values[2][0] = forward.x;	m.values[2][1] = forward.y;	m.values[2][2] = forward.z;	m.values[2][3] = 0;
+		m.values[3][0] = 0;			m.values[3][1] = 0;			m.values[3][2] = 0;			m.values[3][3] = 1;
+
+		return m;
 	}
 
 	Mat4 Mat4::operator*(const Mat4 &other) const

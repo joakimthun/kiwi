@@ -15,6 +15,17 @@ namespace kiwi {
 		return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 	}
 
+	float clamp(float value, float min, float max)
+	{
+		if (value > max)
+			return max;
+
+		if (value < min)
+			return min;
+
+		return value;
+	}
+
 	TriangleAreaSign triangle_area_sign(const Vertex &min_y, const Vertex &max_y, const Vertex &mid_y)
 	{
 		// Vector from min to max

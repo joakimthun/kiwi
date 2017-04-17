@@ -10,7 +10,7 @@ namespace kiwi {
 
 		for (auto i = 0; i < model_->positions().size(); i++)
 		{
-			vertices_.push_back(Vertex(model_->positions()[i], model_->tex_coords()[i]));
+			vertices_.push_back(Vertex(model_->positions()[i], model_->tex_coords()[i], model_->normals()[i]));
 		}
 	}
 

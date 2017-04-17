@@ -15,6 +15,7 @@ namespace kiwi {
 		float get_text_coord_y(std::size_t index) const;
 		float get_one_over_z(std::size_t index) const;
 		float get_depth(std::size_t index) const;
+		float get_light(std::size_t index) const;
 
 		float text_coord_xx_step() const;
 		float text_coord_xy_step() const;
@@ -24,6 +25,8 @@ namespace kiwi {
 		float one_over_zy_step() const;
 		float depth_x_step() const;
 		float depth_y_step() const;
+		float light_x_step() const;
+		float light_y_step() const;
 
 	private:
 		float calc_x_step(const std::array<float, 3> values, const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, float one_over_dx);
@@ -33,6 +36,7 @@ namespace kiwi {
 		std::array<float, 3> text_coords_y_;
 		std::array<float, 3> one_over_z_;
 		std::array<float, 3> depth_;
+		std::array<float, 3> light_;
 
 		float text_coord_xx_step_;
 		float text_coord_xy_step_;
@@ -42,6 +46,8 @@ namespace kiwi {
 		float one_over_zy_step_;
 		float depth_x_step_;
 		float depth_y_step_;
+		float light_x_step_;
+		float light_y_step_;
 	};
 
 }

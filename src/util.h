@@ -24,6 +24,7 @@ namespace kiwi {
 	};
 
 	float f_rand();
+	float clamp(float value, float min, float max);
 	TriangleAreaSign triangle_area_sign(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y);
 	std::vector<std::string> str_split(const std::string &s, char delim, RemoveEmptyEntries remove_empty_entries);
 	std::unique_ptr<Window> create_window(int32_t width, int32_t height);

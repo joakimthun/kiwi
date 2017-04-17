@@ -35,6 +35,9 @@ namespace kiwi {
 
 		depth_ = gradients.get_depth(min_y_index) + gradients.depth_x_step() * x_prestep + gradients.depth_y_step() * y_prestep;
 		depth_step_ = gradients.depth_y_step() + gradients.depth_x_step() * x_step_;
+
+		light_ = gradients.get_light(min_y_index) + gradients.light_x_step() * x_prestep + gradients.light_y_step() * y_prestep;
+		light_step_ = gradients.light_y_step() + gradients.light_x_step() * x_step_;
 	}	
 
 	void Edge::step()
@@ -44,6 +47,7 @@ namespace kiwi {
 		text_coord_y_ += text_coord_y_step_;
 		one_over_z_ += one_over_z_step_;
 		depth_ += depth_step_;
+		light_ += light_step_;
 	}
 
 	float Edge::x() const
@@ -70,12 +74,19 @@ namespace kiwi {
 	{
 		return text_coord_y_;
 	}
+
 	float Edge::one_over_z() const
 	{
 		return one_over_z_;
 	}
+
 	float Edge::depth() const
 	{
 		return depth_;
+	}
+
+	float Edge::light() const
+	{
+		return light_;
 	}
 }
