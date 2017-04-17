@@ -66,20 +66,27 @@ namespace kiwi {
 		auto ry = Mat4();
 		auto rz = Mat4();
 
-		rz.values[0][0] = std::cos(z);	rz.values[0][1] = -std::sin(z);	rz.values[0][2] = 0;			rz.values[0][3] = 0;
-		rz.values[1][0] = std::sin(z);	rz.values[1][1] = std::cos(z);	rz.values[1][2] = 0;			rz.values[1][3] = 0;
-		rz.values[2][0] = 0;			rz.values[2][1] = 0;			rz.values[2][2] = 1;			rz.values[2][3] = 0;
-		rz.values[3][0] = 0;			rz.values[3][1] = 0;			rz.values[3][2] = 0;			rz.values[3][3] = 1;
+		const auto cos_x = std::cos(x);
+		const auto sin_x = std::sin(x);
+		const auto cos_y = std::cos(y);
+		const auto sin_y = std::sin(y);
+		const auto cos_z = std::cos(z);
+		const auto sin_z = std::sin(z);
 
-		rx.values[0][0] = 1;			rx.values[0][1] = 0;			rx.values[0][2] = 0;			rx.values[0][3] = 0;
-		rx.values[1][0] = 0;			rx.values[1][1] = std::cos(x);	rx.values[1][2] = -std::sin(x); rx.values[1][3] = 0;
-		rx.values[2][0] = 0;			rx.values[2][1] = std::sin(x);	rx.values[2][2] =  std::cos(x); rx.values[2][3] = 0;
-		rx.values[3][0] = 0;			rx.values[3][1] = 0;			rx.values[3][2] = 0;			rx.values[3][3] = 1;
+		rz.values[0][0] = cos_z;	rz.values[0][1] = -sin_z;	rz.values[0][2] = 0;		rz.values[0][3] = 0;
+		rz.values[1][0] = sin_z;	rz.values[1][1] = cos_z;	rz.values[1][2] = 0;		rz.values[1][3] = 0;
+		rz.values[2][0] = 0;		rz.values[2][1] = 0;		rz.values[2][2] = 1;		rz.values[2][3] = 0;
+		rz.values[3][0] = 0;		rz.values[3][1] = 0;		rz.values[3][2] = 0;		rz.values[3][3] = 1;
 
-		ry.values[0][0] = std::cos(y);	ry.values[0][1] = 0;			ry.values[0][2] = -std::sin(y); ry.values[0][3] = 0;
-		ry.values[1][0] = 0;			ry.values[1][1] = 1;			ry.values[1][2] = 0;			ry.values[1][3] = 0;
-		ry.values[2][0] = std::sin(y);	ry.values[2][1] = 0;			ry.values[2][2] = std::cos(y);	ry.values[2][3] = 0;
-		ry.values[3][0] = 0;			ry.values[3][1] = 0;			ry.values[3][2] = 0;			ry.values[3][3] = 1;
+		rx.values[0][0] = 1;		rx.values[0][1] = 0;		rx.values[0][2] = 0;		rx.values[0][3] = 0;
+		rx.values[1][0] = 0;		rx.values[1][1] = cos_x;	rx.values[1][2] = -sin_x;	rx.values[1][3] = 0;
+		rx.values[2][0] = 0;		rx.values[2][1] = sin_x;	rx.values[2][2] = cos_x;	rx.values[2][3] = 0;
+		rx.values[3][0] = 0;		rx.values[3][1] = 0;		rx.values[3][2] = 0;		rx.values[3][3] = 1;
+
+		ry.values[0][0] = cos_y;	ry.values[0][1] = 0;		ry.values[0][2] = -sin_y;	ry.values[0][3] = 0;
+		ry.values[1][0] = 0;		ry.values[1][1] = 1;		ry.values[1][2] = 0;		ry.values[1][3] = 0;
+		ry.values[2][0] = sin_y;	ry.values[2][1] = 0;		ry.values[2][2] = cos_y;	ry.values[2][3] = 0;
+		ry.values[3][0] = 0;		ry.values[3][1] = 0;		ry.values[3][2] = 0;		ry.values[3][3] = 1;
 
 		return  rz * (ry * rx);
 	}
