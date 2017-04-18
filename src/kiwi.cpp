@@ -1,6 +1,8 @@
 #include <SDL.h>
+#include <SDL_image.h>
 #include <iostream>
 
+#include "kiwi_exception.h"
 #include "util.h"
 #include "window.h"
 #include "rendering/renderer.h"
@@ -18,11 +20,17 @@
 
 using namespace kiwi;
 
+void init_sdl();
+
 // TODO: Use a real timer...
 const float dt = 0.0032f;
 
 int main(int argc, char* argv[])
 {
+	init_sdl();
+
+	auto texture = Bitmap("assets/bricks.jpg");
+
 	auto window = create_window(800, 600);
 	window->open();
 
@@ -33,21 +41,6 @@ int main(int argc, char* argv[])
 
 	const auto terrain_mesh = Mesh("assets/terrain2.obj");
 	const auto terrain_transform = Transform(Vec4(0.0f, -1.0f, 0.0f));
-
-	auto texture = Bitmap(512, 512);
-	for (auto j = 0; j < texture.height(); j++)
-	{
-		for (auto i = 0; i < texture.width(); i++)
-		{
-			texture.put_pixel(i, j,
-				//static_cast<uint8_t>(f_rand() * 255.0 + 0.5),
-				//static_cast<uint8_t>(f_rand() * 255.0 + 0.5),
-				//static_cast<uint8_t>(f_rand() * 255.0 + 0.5));
-				static_cast<uint8_t>(220.0f),
-				static_cast<uint8_t>(220.0f),
-				static_cast<uint8_t>(220.0f));
-		}
-	}
 
 	const auto camera_transform = Transform(Vec4(0.0f, 5.0f, -3.0f), Quaternion( Vec4(1.0f, 0.0f, 0.0f), degrees_to_radians(30.0f)));
 	auto camera = Camera(camera_transform, Mat4::perspective(degrees_to_radians(70.0f),800.f / 600.f, 0.1f, 1000.0f));
@@ -80,4 +73,18 @@ int main(int argc, char* argv[])
 	}
 
 	return 0;
+}
+
+void init_sdl()
+{
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	{
+		throw KiwiException("SDL_INIT_VIDEO failed: " + std::string(SDL_GetError()));
+	}
+
+	const auto img_flags = IMG_INIT_PNG;
+	if (!(IMG_Init(img_flags) & img_flags))
+	{
+		throw KiwiException("SDL_IMG_Init failed: " + std::string(IMG_GetError()));
+	}
 }

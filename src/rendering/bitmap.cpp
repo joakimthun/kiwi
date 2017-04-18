@@ -1,6 +1,10 @@
 #include "bitmap.h"
 
+#include <SDL_image.h>
 #include <stdlib.h>
+#include <cstring>
+
+#include "../kiwi_exception.h"
 
 namespace kiwi {
 
@@ -12,6 +16,35 @@ namespace kiwi {
 	{
 		data_size_ = width * height * 3;
 		data_ = (uint8_t*)calloc(data_size_, 1);
+	}
+
+	Bitmap::Bitmap(const std::string &filename)
+	{
+		SDL_Surface* optimized_surface = nullptr;
+
+		auto loaded_surface = IMG_Load(filename.c_str());
+		if (loaded_surface == nullptr)
+		{
+			throw KiwiException("Could not load bitmap '" + filename + "': " + std::string(IMG_GetError()));
+		}
+
+		optimized_surface = SDL_ConvertSurfaceFormat(loaded_surface, SDL_PIXELFORMAT_RGB24, NULL);
+		if (optimized_surface == nullptr)
+		{
+			throw KiwiException("Could not convert surface format '" + filename + "': " + std::string(SDL_GetError()));
+		}
+
+		data_size_ = optimized_surface->w * optimized_surface->h * optimized_surface->format->BytesPerPixel;
+		data_ = (uint8_t*)calloc(data_size_, 1);
+
+		std::memcpy(data_, optimized_surface->pixels, data_size_);
+
+		width_ = optimized_surface->w;
+		height_ = optimized_surface->h;
+		stride_ = optimized_surface->format->BytesPerPixel;
+
+		SDL_FreeSurface(optimized_surface);
+		SDL_FreeSurface(loaded_surface);
 	}
 
 	Bitmap::~Bitmap()

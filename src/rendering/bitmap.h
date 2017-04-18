@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <cstddef>
+#include <string>
 
 namespace kiwi {
 
@@ -9,6 +10,7 @@ namespace kiwi {
 	{
 	public:
 		Bitmap(int32_t width, int32_t height);
+		Bitmap(const std::string &filename);
 		~Bitmap();
 
 		int32_t width() const;
@@ -28,7 +30,7 @@ namespace kiwi {
 		int32_t height_;
 		uint8_t *data_;
 		uint64_t data_size_;
-		const uint8_t stride_;
+		uint8_t stride_;
 	};
 
 }

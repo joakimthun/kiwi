@@ -10,15 +10,13 @@ namespace kiwi {
 		height_(height),
 		display_buffer_(width, height)
 	{
-		SDL_Init(SDL_INIT_VIDEO);
-
 		sdl_window_ = SDL_CreateWindow("Kiwi", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, 0);
 		if(!sdl_window_)
-			throw KiwiException("Could not create sdl window: ");
+			throw KiwiException("Could not create sdl window: " + std::string(SDL_GetError()));
 
 		sdl_window_surface_ = SDL_GetWindowSurface(sdl_window_);
 		if (!sdl_window_surface_)
-			throw KiwiException("Could not create sdl window surface");
+			throw KiwiException("Could not create sdl window surface: " + std::string(SDL_GetError()));
 	}
 
 	SDLWindow::~SDLWindow()
