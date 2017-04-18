@@ -26,6 +26,14 @@ namespace kiwi {
 	{
 	}
 
+	Transform::Transform(const Vec4 &position, const Vec4 &scale)
+		:
+		position_(position),
+		rotation_(Quaternion(0.0f, 0.0f, 0.0f, 1.0f)),
+		scale_(scale)
+	{
+	}
+
 	Transform::Transform(const Vec4 &position, const Quaternion &rotation, const Vec4 &scale)
 		:
 		position_(position),

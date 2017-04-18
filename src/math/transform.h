@@ -12,6 +12,7 @@ namespace kiwi {
 		Transform();
 		Transform(const Vec4 &position);
 		Transform(const Vec4 &position, const Quaternion &rotation);
+		Transform(const Vec4 &position, const Vec4 &scale);
 		Transform(const Vec4 &position, const Quaternion &rotation, const Vec4 &scale);
 
 		const Vec4 &position() const;
