@@ -13,9 +13,12 @@ namespace kiwi {
 		SDLWindow(int32_t width, int32_t height);
 		~SDLWindow();
 
-		void open();
-		void update();
-		Bitmap &display_buffer();
+		int32_t width() const override;
+		int32_t height() const override;
+
+		void open() override;
+		void update() override;
+		Bitmap &display_buffer() override;
 
 	private:
 		SDL_Window *sdl_window_;

@@ -74,6 +74,16 @@ namespace kiwi {
 		bitmap_info_.biCompression = BI_RGB;
 	}
 
+	int32_t Win32Window::width() const
+	{
+		return width_;
+	}
+
+	int32_t Win32Window::height() const
+	{
+		return height_;
+	}
+
 	void Win32Window::open()
 	{
 		ShowWindow(hwnd_, SW_SHOW);

@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 
 	auto texture = Bitmap("assets/alduin.jpg");
 
-	auto window = create_window(800, 600);
+	auto window = create_window(1920, 1080);
 	window->open();
 
 	auto renderer = Renderer(window->display_buffer());
@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 	auto transform = Transform(Vec4(0.0f, -10.0f, 10.0f), Quaternion(Vec4(0.0f, 1.0f, 0.0f), 2.0f), Vec4(0.05f, 0.05f, 0.05f));
 
 	const auto camera_transform = Transform(Vec4(0.0f, 20.0f, -30.0f), Quaternion(Vec4(1.0f, 0.0f, 0.0f), degrees_to_radians(40.0f)));
-	auto camera = Camera(camera_transform, Mat4::perspective(degrees_to_radians(70.0f),800.f / 600.f, 0.1f, 1000.0f));
+	auto camera = Camera(camera_transform, Mat4::perspective(degrees_to_radians(70.0f), static_cast<float>(window->width()) / static_cast<float>(window->height()), 0.1f, 1000.0f));
 
 	auto running = true;
 	while (running)

@@ -24,6 +24,16 @@ namespace kiwi {
 		SDL_DestroyWindow(sdl_window_);
 	}
 
+	int32_t SDLWindow::width() const
+	{
+		return width_;
+	}
+
+	int32_t SDLWindow::height() const
+	{
+		return height_;
+	}
+
 	void SDLWindow::open()
 	{
 		SDL_ShowWindow(sdl_window_);

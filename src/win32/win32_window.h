@@ -12,9 +12,12 @@ namespace kiwi {
 	public:
 		Win32Window(int32_t width, int32_t height);
 
-		void open();
-		void update();
-		Bitmap &display_buffer();
+		int32_t width() const override;
+		int32_t height() const override;
+
+		void open() override;
+		void update() override;
+		Bitmap &display_buffer() override;
 
 	private:
 		static LRESULT WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
