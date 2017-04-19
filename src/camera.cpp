@@ -65,6 +65,17 @@ namespace kiwi {
 				break;
 			}
 		}
+		else if (e.type == SDL_MOUSEWHEEL)
+		{
+			if (e.wheel.y >= 0)
+			{
+				move(rotation.forward(), move_amount);
+			}
+			else
+			{
+				move(rotation.back(), move_amount);
+			}
+		}
 	}
 
 	void Camera::move(const Vec4 &direction, float amount)
