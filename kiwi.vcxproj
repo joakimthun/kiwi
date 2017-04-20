@@ -162,6 +162,7 @@
     <ClCompile Include="src\kiwi.cpp" />
     <ClCompile Include="src\rendering\renderer.cpp" />
     <ClCompile Include="src\sdl_window.cpp" />
+    <ClCompile Include="src\timer.cpp" />
     <ClCompile Include="src\util.cpp" />
     <ClCompile Include="src\geometry\vertex.cpp" />
     <ClCompile Include="src\win32\win32_window.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="src\models\obj_model.h" />
     <ClInclude Include="src\rendering\renderer.h" />
     <ClInclude Include="src\sdl_window.h" />
+    <ClInclude Include="src\timer.h" />
     <ClInclude Include="src\util.h" />
     <ClInclude Include="src\geometry\vertex.h" />
     <ClInclude Include="src\win32\win32_window.h" />

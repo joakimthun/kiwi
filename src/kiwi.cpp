@@ -10,6 +10,7 @@
 #include "rendering/bitmap.h"
 #include "geometry/mesh.h"
 #include "camera.h"
+#include "timer.h"
 
 #include "math/util.h"
 #include "math/vec4.h"
@@ -21,9 +22,6 @@
 using namespace kiwi;
 
 void init_sdl();
-
-// TODO: Use a real timer...
-const float dt = 0.0032f;
 
 int main(int argc, char* argv[])
 {
@@ -47,6 +45,12 @@ int main(int argc, char* argv[])
 	const auto camera_transform = Transform(Vec4(0.0f, 20.0f, -30.0f), Quaternion(Vec4(1.0f, 0.0f, 0.0f), degrees_to_radians(40.0f)));
 	auto camera = Camera(camera_transform, Mat4::perspective(degrees_to_radians(70.0f), static_cast<float>(window->width()) / static_cast<float>(window->height()), 0.1f, 1000.0f));
 
+	const auto max_dt = 0.032f;
+	auto dt = 0.016f;
+	Timer timer;
+	timer.start();
+	auto num_frames = 0;
+
 	auto running = true;
 	while (running)
 	{
@@ -66,12 +70,27 @@ int main(int argc, char* argv[])
 
 		const auto vp = camera.view_projection();
 
-		//transform = transform.rotate(Quaternion(Vec4(0.0f, 1.0f, 0.0f), dt * 3.0f));
+		transform = transform.rotate(Quaternion(Vec4(0.0f, 1.0f, 0.0f), dt * 3.0f));
 
 		renderer.draw_mesh(mesh, vp, transform.transformation(), texture);
 		//renderer.draw_triangle(v1, v2, v3, vp, transform.transformation(), texture);
 
 		window->update();
+
+		dt = (timer.get_ticks_since_last_call() / 1000.f);
+		float avg_fps = num_frames / (timer.get_ticks() / 1000.f);
+		if (avg_fps > 2000000)
+		{
+			// The first couple of frames the elapsed time count is tiny and will spike the fps.
+			avg_fps = 0;
+		}
+
+		if (num_frames % 100 == 0)
+		{
+			std::cout << "dt: " << dt << " fps: " << avg_fps << std::endl;
+		}
+
+		num_frames++;
 	}
 
 	return 0;
