@@ -10,7 +10,7 @@
 
 namespace kiwi {
 
-	constexpr inline float get_position_at(const Vertex &v, std::size_t index)
+	constexpr auto get_position_at(const Vertex &v, std::size_t index)
 	{
 		switch (index)
 		{
@@ -68,8 +68,8 @@ namespace kiwi {
 			return;
 		}
 
-		Vertices3 vertices;
-		Vertices3 result;
+		std::vector<Vertex> vertices;
+		std::vector<Vertex> result;
 
 		vertices.push_back(v1);
 		vertices.push_back(v2);
@@ -83,11 +83,21 @@ namespace kiwi {
 		{
 			const auto initial_vertex = vertices[0];
 
-			for (int i = 1; i < vertices.size - 1; i++)
+			for (int i = 1; i < vertices.size() - 1; i++)
 			{
 				fill_triangle(initial_vertex, vertices[i], vertices[i + 1], texture);
 			}
 		}
+	}
+
+	void Renderer::draw_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3, const Mat4 &view_projection, const Mat4 &transform, const Bitmap &texture)
+	{
+		const auto mvp = view_projection * transform;
+			draw_triangle(
+				v1.transform(mvp, transform),
+				v2.transform(mvp, transform),
+				v3.transform(mvp, transform),
+				texture);
 	}
 
 	void Renderer::draw_mesh(const Mesh & mesh, const Mat4 &view_projection, const Mat4 &transform, const Bitmap & texture)
@@ -103,7 +113,7 @@ namespace kiwi {
 		}
 	}
 
-	bool Renderer::clip_polygon_axis(Vertices3 &vertices, Vertices3 &result, std::size_t component_index)
+	bool Renderer::clip_polygon_axis(std::vector<Vertex> &vertices, std::vector<Vertex> &result, std::size_t component_index)
 	{
 		clip_polygon_component(vertices, result, component_index, 1.0f);
 		vertices.clear();
@@ -119,13 +129,13 @@ namespace kiwi {
 		return !vertices.empty();
 	}
 
-	void Renderer::clip_polygon_component(Vertices3 &vertices, Vertices3 &result, std::size_t component_index, float component_factor)
+	void Renderer::clip_polygon_component(std::vector<Vertex> &vertices, std::vector<Vertex> &result, std::size_t component_index, float component_factor)
 	{
-		auto previous_vertex = vertices[vertices.size - 1];
+		auto previous_vertex = vertices[vertices.size() - 1];
 		auto previous_component = get_position_at(previous_vertex, component_index) * component_factor;
 		auto previous_inside = previous_component <= previous_vertex.w();
 
-		for(auto i = 0; i < vertices.size; i++)
+		for(auto i = 0; i < vertices.size(); i++)
 		{
 			const auto current_vertex = vertices[i];
 			const auto current_component = get_position_at(current_vertex, component_index) * component_factor;

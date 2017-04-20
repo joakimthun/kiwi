@@ -31,6 +31,7 @@ namespace kiwi {
 	void Camera::update(SDL_Event &e, float dt)
 	{
 		const auto rotation = transform_.rotation();
+		const auto mw_move_amount = 50.0f * dt;
 		const auto move_amount = 220.0f * dt;
 		const auto x_amount = 2.0f * dt;
 		const auto y_amount = 2.0f * dt;
@@ -69,11 +70,11 @@ namespace kiwi {
 		{
 			if (e.wheel.y >= 0)
 			{
-				move(rotation.forward(), move_amount);
+				move(rotation.forward(), mw_move_amount);
 			}
 			else
 			{
-				move(rotation.back(), move_amount);
+				move(rotation.back(), mw_move_amount);
 			}
 		}
 	}
