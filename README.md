@@ -1,5 +1,5 @@
 # Kiwi
-A 3D software renderer
+A 3D software renderer written in c++
 
 #### Example:
 ![alt tag](https://github.com/joakimthun/kiwi/blob/master/examples/alduin.gif)
