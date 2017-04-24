@@ -239,21 +239,17 @@ namespace kiwi {
 
 		const auto x_dist = right.x() - left.x();
 
-		const auto tex_coord_xx_step = gradients.text_coord_xx_step();
-		const auto tex_coord_yx_step = gradients.text_coord_yx_step();
-		const auto one_over_zx_step = gradients.one_over_zx_step();
-		const auto depth_x_step = gradients.depth_x_step();
-		const auto light_x_step = gradients.light_x_step();
+		auto tex_coord_x = left.text_coord_x() + gradients.text_coord_xx_step() * x_prestep;
+		auto tex_coord_y = left.text_coord_y() + gradients.text_coord_yx_step() * x_prestep;
+		auto one_over_z = left.one_over_z() + gradients.one_over_zx_step() * x_prestep;
+		auto depth = left.depth() + gradients.depth_x_step() * x_prestep;
+		auto light = left.light() + gradients.light_x_step() * x_prestep;
 
-		auto tex_coord_x = left.text_coord_x() + tex_coord_xx_step * x_prestep;
-		auto tex_coord_y = left.text_coord_y() + tex_coord_yx_step * x_prestep;
-		auto one_over_z = left.one_over_z() + one_over_zx_step * x_prestep;
-		auto depth = left.depth() + depth_x_step * x_prestep;
-		auto light = left.light() + light_x_step * x_prestep;
+		auto depth_buffer_index_base = i * render_target_.width();
 
 		for (auto j = min_x; j < max_x; j++)
 		{
-			auto depth_buffer_index = j + i * render_target_.width();
+			auto depth_buffer_index = j + depth_buffer_index_base;
 
 			// Only draw the pixel if it's closer to the camera than the pixel currently in the depth buffer
 			if (depth < depth_buffer_[depth_buffer_index])
@@ -267,11 +263,11 @@ namespace kiwi {
 				render_target_.copy_pixel(j, i, src_x, src_y, texture, light);
 			}
 
-			one_over_z += one_over_zx_step;
-			tex_coord_x += tex_coord_xx_step;
-			tex_coord_y += tex_coord_yx_step;
-			depth += depth_x_step;
-			light += light_x_step;
+			one_over_z += gradients.one_over_zx_step();
+			tex_coord_x += gradients.text_coord_xx_step();
+			tex_coord_y += gradients.text_coord_yx_step();
+			depth += gradients.depth_x_step();
+			light += gradients.light_x_step();
 		}
 	}
 }
