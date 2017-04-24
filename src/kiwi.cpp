@@ -29,18 +29,13 @@ int main(int argc, char* argv[])
 
 	auto texture = Bitmap("assets/alduin.jpg");
 
-	auto window = create_window(1920, 1080);
+	auto window = create_window(800, 600);
 	window->open();
 
 	auto renderer = Renderer(window->display_buffer());
 
 	const auto mesh = Mesh("assets/alduin.obj");
 	auto transform = Transform(Vec4(0.0f, -10.0f, 10.0f), Quaternion(Vec4(0.0f, 1.0f, 0.0f), 2.0f), Vec4(0.05f, 0.05f, 0.05f));
-
-	//auto v1 = Vertex(-1.0f, -1.0f, 0.0f, 1.0f, 0.5f, 0.5f, 0.5f, 0.5f);
-	//auto v2 = Vertex(0.0f, 1.0f, 0.0f, 1.0f, 0.5f, 0.5f, 0.5f, 0.5f);
-	//auto v3 = Vertex(1.0f, -1.0f, 0.0f, 1.0f, 0.5f, 0.5f, 0.5f, 0.5f);
-	//auto transform = Transform(Vec4(0.0f, 0.0f, 0.0f));
 
 	const auto camera_transform = Transform(Vec4(0.0f, 20.0f, -30.0f), Quaternion(Vec4(1.0f, 0.0f, 0.0f), degrees_to_radians(40.0f)));
 	auto camera = Camera(camera_transform, Mat4::perspective(degrees_to_radians(70.0f), static_cast<float>(window->width()) / static_cast<float>(window->height()), 0.1f, 1000.0f));
@@ -73,7 +68,6 @@ int main(int argc, char* argv[])
 		transform = transform.rotate(Quaternion(Vec4(0.0f, 1.0f, 0.0f), dt * 3.0f));
 
 		renderer.draw_mesh(mesh, vp, transform.transformation(), texture);
-		//renderer.draw_triangle(v1, v2, v3, vp, transform.transformation(), texture);
 
 		window->update();
 
