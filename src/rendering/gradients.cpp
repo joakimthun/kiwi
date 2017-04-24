@@ -5,7 +5,7 @@
 
 namespace kiwi {
 
-	Gradients::Gradients(const Vertex &min_y, const Vertex &mid_y, const Vertex& max_y)
+	Gradients::Gradients(const Vertex &min_y, const Vertex &mid_y, const Vertex& max_y, const Vec4 &light_direction, float ambient_lighting_intensity)
 	{
 		const auto one_over_dx = 1.0f /
 			(((mid_y.x() - max_y.x()) *
@@ -32,10 +32,9 @@ namespace kiwi {
 		depth_[1] = mid_y.z();
 		depth_[2] = max_y.z();
 
-		const auto light_dir = Vec4(0.0f, 0.0f, -1.0f);
-		light_[0] = clamp(min_y.normal().dot(light_dir), 0.0f, 1.0f) * 0.9f + 0.2f;
-		light_[1] = clamp(mid_y.normal().dot(light_dir), 0.0f, 1.0f) * 0.9f + 0.2f;
-		light_[2] = clamp(max_y.normal().dot(light_dir), 0.0f, 1.0f) * 0.9f + 0.2f;
+		light_[0] = clamp(min_y.normal().dot(light_direction), 0.0f, 1.0f) * 0.9f + ambient_lighting_intensity;
+		light_[1] = clamp(mid_y.normal().dot(light_direction), 0.0f, 1.0f) * 0.9f + ambient_lighting_intensity;
+		light_[2] = clamp(max_y.normal().dot(light_direction), 0.0f, 1.0f) * 0.9f + ambient_lighting_intensity;
 
 		text_coord_xx_step_ = calc_x_step(text_coords_x_, min_y, mid_y, max_y, one_over_dx);
 		text_coord_xy_step_ = calc_y_step(text_coords_x_, min_y, mid_y, max_y, one_over_dy);

@@ -40,6 +40,9 @@ int main(int argc, char* argv[])
 	const auto camera_transform = Transform(Vec4(0.0f, 20.0f, -30.0f), Quaternion(Vec4(1.0f, 0.0f, 0.0f), degrees_to_radians(40.0f)));
 	auto camera = Camera(camera_transform, Mat4::perspective(degrees_to_radians(70.0f), static_cast<float>(window->width()) / static_cast<float>(window->height()), 0.1f, 1000.0f));
 
+	renderer.set_light_direction(Vec4(0.0f, 0.0f, -1.0f));
+	auto ambient_lighting_intensity = 0.1f;
+
 	auto dt = 0.016f;
 	Timer timer;
 	timer.start();
@@ -63,6 +66,9 @@ int main(int argc, char* argv[])
 
 		renderer.clear(0xF6, 0xF6, 0xF6);
 		renderer.clear_depth_buffer();
+
+		//ambient_lighting_intensity += 0.001;
+		renderer.set_ambient_lighting_intensity(ambient_lighting_intensity);
 
 		const auto vp = camera.view_projection();
 

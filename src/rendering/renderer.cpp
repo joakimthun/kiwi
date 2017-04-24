@@ -31,7 +31,9 @@ namespace kiwi {
 		:
 		render_target_(render_target),
 		half_width_(static_cast<float>(render_target.width() / 2)),
-		half_height_(static_cast<float>(render_target.height() / 2))
+		half_height_(static_cast<float>(render_target.height() / 2)),
+		light_direction_(Vec4(0.0f, 0.0f, -1.0f)),
+		ambient_lighting_intensity_(0.1f)
 	{
 		depth_buffer_size_ = render_target.width() * render_target.height();
 		depth_buffer_ = (float*)calloc(depth_buffer_size_, sizeof(float));
@@ -113,6 +115,16 @@ namespace kiwi {
 		}
 	}
 
+	void Renderer::set_light_direction(const Vec4 &direction)
+	{
+		light_direction_ = direction;
+	}
+
+	void Renderer::set_ambient_lighting_intensity(float intensity)
+	{
+		ambient_lighting_intensity_ = intensity;
+	}
+
 	bool Renderer::clip_polygon_axis(std::vector<Vertex> &vertices, std::vector<Vertex> &result, std::size_t component_index)
 	{
 		clip_polygon_component(vertices, result, component_index, 1.0f);
@@ -188,7 +200,7 @@ namespace kiwi {
 
 	void Renderer::scan_triangle(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, bool handedness, const Bitmap &texture)
 	{
-		const auto gradients = Gradients(min_y, mid_y, max_y);
+		const auto gradients = Gradients(min_y, mid_y, max_y, light_direction_, ambient_lighting_intensity_);
 
 		auto top_to_bottom = Edge(gradients, min_y, max_y, 0);
 		auto top_to_middle = Edge(gradients, min_y, mid_y, 0);

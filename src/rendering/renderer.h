@@ -23,6 +23,8 @@ namespace kiwi {
 		void draw_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3, const Bitmap &texture);
 		void draw_triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3, const Mat4 &view_projection, const Mat4 &transform, const Bitmap &texture);
 		void draw_mesh(const Mesh &mesh, const Mat4 &view_projection, const Mat4 &transform, const Bitmap &texture);
+		void set_light_direction(const Vec4 &direction);
+		void set_ambient_lighting_intensity(float intensity);
 		
 	private:
 		bool clip_polygon_axis(std::vector<Vertex> &vertices, std::vector<Vertex> &result, std::size_t component_index);
@@ -37,6 +39,8 @@ namespace kiwi {
 		std::size_t depth_buffer_size_;
 		const float half_width_;
 		const float half_height_;
+		Vec4 light_direction_;
+		float ambient_lighting_intensity_;
 	};
 
 }

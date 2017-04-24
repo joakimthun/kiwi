@@ -2,6 +2,7 @@
 
 #include <array>
 
+#include "../math/vec4.h"
 #include "../geometry/vertex.h"
 
 namespace kiwi {
@@ -9,7 +10,7 @@ namespace kiwi {
 	class Gradients
 	{
 	public:
-		Gradients(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y);
+		Gradients(const Vertex &min_y, const Vertex &mid_y, const Vertex &max_y, const Vec4 &light_direction, float ambient_lighting_intensity);
 
 		float get_text_coord_x(std::size_t index) const;
 		float get_text_coord_y(std::size_t index) const;
