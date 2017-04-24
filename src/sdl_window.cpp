@@ -1,5 +1,7 @@
 #include "sdl_window.h"
 
+#include <cstring>
+
 #include "kiwi_exception.h"
 
 namespace kiwi {
@@ -8,7 +10,7 @@ namespace kiwi {
 		:
 		width_(width),
 		height_(height),
-		display_buffer_(width, height)
+		display_buffer_(width, height, 4)
 	{
 		sdl_window_ = SDL_CreateWindow("Kiwi", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, 0);
 		if(!sdl_window_)
@@ -41,23 +43,9 @@ namespace kiwi {
 
 	void SDLWindow::update()
 	{
-		const auto display_buffer_data = display_buffer_.data();
-		uint8_t *pixel = static_cast<uint8_t*>(sdl_window_surface_->pixels);
-
 		SDL_LockSurface(sdl_window_surface_);
 
-		for (auto x = 0; x < width_; x++)
-		{
-			for (auto y = 0; y < height_; y++)
-			{
-				const auto display_buffer_index = (x + y * display_buffer_.width()) * display_buffer_.stride();
-				auto current_pixel = pixel + (y * sdl_window_surface_->pitch) + (x * sizeof(uint32_t));
-				current_pixel[0] = display_buffer_data[display_buffer_index];
-				current_pixel[1] = display_buffer_data[display_buffer_index + 1];
-				current_pixel[2] = display_buffer_data[display_buffer_index + 2];
-				current_pixel[3] = 0xFF;
-			}
-		}
+		std::memcpy(sdl_window_surface_->pixels, display_buffer_.data(), display_buffer_.data_size());
 
 		SDL_UnlockSurface(sdl_window_surface_);
 

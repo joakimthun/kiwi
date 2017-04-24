@@ -9,7 +9,7 @@ namespace kiwi {
 	class Bitmap
 	{
 	public:
-		Bitmap(int32_t width, int32_t height);
+		Bitmap(int32_t width, int32_t height, uint8_t stride);
 		Bitmap(const std::string &filename);
 		~Bitmap();
 

@@ -8,7 +8,7 @@ namespace kiwi {
 		:
 		width_(width),
 		height_(height),
-		display_buffer_(width, height)
+		display_buffer_(width, height, 3)
 	{
 		hinstance_ = GetModuleHandle(NULL);
 

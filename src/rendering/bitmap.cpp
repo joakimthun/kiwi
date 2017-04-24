@@ -8,13 +8,13 @@
 
 namespace kiwi {
 
-	Bitmap::Bitmap(int32_t width, int32_t height)
+	Bitmap::Bitmap(int32_t width, int32_t height, uint8_t stride)
 		:
 		width_(width),
 		height_(height),
-		stride_(3)
+		stride_(stride)
 	{
-		data_size_ = width * height * 3;
+		data_size_ = width * height * stride;
 		data_ = (uint8_t*)calloc(data_size_, 1);
 	}
 
@@ -28,7 +28,7 @@ namespace kiwi {
 			throw KiwiException("Could not load bitmap '" + filename + "': " + std::string(IMG_GetError()));
 		}
 
-		optimized_surface = SDL_ConvertSurfaceFormat(loaded_surface, SDL_PIXELFORMAT_RGB24, NULL);
+		optimized_surface = SDL_ConvertSurfaceFormat(loaded_surface, SDL_PIXELFORMAT_RGBA32, NULL);
 		if (optimized_surface == nullptr)
 		{
 			throw KiwiException("Could not convert surface format '" + filename + "': " + std::string(SDL_GetError()));
@@ -88,6 +88,7 @@ namespace kiwi {
 			data_[i] = b;
 			data_[i + 1] = g;
 			data_[i + 2] = r;
+			data_[i + 3] = 0xFF;
 		}
 	}
 
@@ -97,6 +98,7 @@ namespace kiwi {
 		data_[index] = b;
 		data_[index + 1] = g;
 		data_[index + 2] = r;
+		data_[index + 3] = 0xFF;
 	}
 
 	void Bitmap::copy_pixel(int32_t dest_x, uint32_t dest_y, int32_t src_x, uint32_t src_y, const Bitmap& src, float light_factor)
@@ -107,6 +109,7 @@ namespace kiwi {
 		data_[dest_index] = src.get_component(src_index, light_factor);
 		data_[dest_index + 1] = src.get_component(src_index + 1, light_factor);
 		data_[dest_index + 2] = src.get_component(src_index + 2, light_factor);
+		data_[dest_index + 3] = 0xFF;
 	}
 
 	uint8_t Bitmap::get_component(std::size_t index) const
