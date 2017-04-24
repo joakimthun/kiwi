@@ -52,13 +52,10 @@ namespace kiwi {
 			{
 				const auto display_buffer_index = (x + y * display_buffer_.width()) * display_buffer_.stride();
 				auto current_pixel = pixel + (y * sdl_window_surface_->pitch) + (x * sizeof(uint32_t));
-
-				*((uint32_t*)current_pixel) = SDL_MapRGBA(
-					sdl_window_surface_->format, 
-					display_buffer_data[display_buffer_index], 
-					display_buffer_data[display_buffer_index + 1], 
-					display_buffer_data[display_buffer_index + 2], 
-					0xFF);
+				current_pixel[0] = display_buffer_data[display_buffer_index];
+				current_pixel[1] = display_buffer_data[display_buffer_index + 1];
+				current_pixel[2] = display_buffer_data[display_buffer_index + 2];
+				current_pixel[3] = 0xFF;
 			}
 		}
 
