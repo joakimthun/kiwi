@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 
 	auto texture = Bitmap("assets/alduin.jpg");
 
-	auto window = create_window(800, 600);
+	auto window = create_window(1280, 720);
 	window->open();
 
 	auto renderer = Renderer(window->display_buffer());
@@ -40,11 +40,12 @@ int main(int argc, char* argv[])
 	const auto camera_transform = Transform(Vec4(0.0f, 20.0f, -30.0f), Quaternion(Vec4(1.0f, 0.0f, 0.0f), degrees_to_radians(40.0f)));
 	auto camera = Camera(camera_transform, Mat4::perspective(degrees_to_radians(70.0f), static_cast<float>(window->width()) / static_cast<float>(window->height()), 0.1f, 1000.0f));
 
-	const auto max_dt = 0.032f;
 	auto dt = 0.016f;
 	Timer timer;
 	timer.start();
 	auto num_frames = 0;
+
+	std::cout << "Mesh: " << mesh.filename() << " Num vertices: " << mesh.num_vertices() << std::endl;
 
 	auto running = true;
 	while (running)
@@ -65,7 +66,7 @@ int main(int argc, char* argv[])
 
 		const auto vp = camera.view_projection();
 
-		transform = transform.rotate(Quaternion(Vec4(0.0f, 1.0f, 0.0f), dt * 3.0f));
+		transform = transform.rotate(Quaternion(Vec4(0.0f, 1.0f, 0.0f), dt));
 
 		renderer.draw_mesh(mesh, vp, transform.transformation(), texture);
 
@@ -81,7 +82,7 @@ int main(int argc, char* argv[])
 
 		if (num_frames % 100 == 0)
 		{
-			std::cout << "dt: " << dt << " fps: " << avg_fps << std::endl;
+			std::cout << "dt: " << dt << " fps: " << avg_fps << "\r";
 		}
 
 		num_frames++;

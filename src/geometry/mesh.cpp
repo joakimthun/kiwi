@@ -5,6 +5,8 @@
 namespace kiwi {
 
 	Mesh::Mesh(const std::string &filename)
+		:
+		filename_(filename)
 	{
 		model_ = ObjModel::from_file(filename);
 
@@ -27,6 +29,16 @@ namespace kiwi {
 	std::size_t Mesh::num_indices() const
 	{
 		return model_->indices().size();
+	}
+
+	std::size_t Mesh::num_vertices() const
+	{
+		return vertices_.size();
+	}
+
+	const std::string &Mesh::filename() const
+	{
+		return filename_;
 	}
 
 }
