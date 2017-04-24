@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <cstddef>
 #include <string>
+#include <memory>
 
 namespace kiwi {
 
@@ -12,6 +13,8 @@ namespace kiwi {
 		Bitmap(int32_t width, int32_t height, uint8_t stride);
 		Bitmap(const std::string &filename);
 		~Bitmap();
+
+		static std::unique_ptr<Bitmap> create(int32_t width, int32_t height, uint8_t r, uint8_t g, uint8_t b);
 
 		int32_t width() const;
 		int32_t height() const;

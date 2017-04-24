@@ -56,6 +56,20 @@ namespace kiwi {
 		}
 	}
 
+	std::unique_ptr<Bitmap> Bitmap::create(int32_t width, int32_t height, uint8_t r, uint8_t g, uint8_t b)
+	{
+		auto bitmap = std::make_unique<Bitmap>(width, width, 4);
+		for (auto j = 0; j < bitmap->height(); j++)
+		{
+			for (auto i = 0; i < bitmap->width(); i++)
+			{
+				bitmap->put_pixel(i, j, r, g, b);
+			}
+		}
+
+		return bitmap;
+	}
+
 	int32_t Bitmap::width() const
 	{
 		return width_;
